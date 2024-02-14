@@ -7,6 +7,21 @@
 #include "GameFramework/Actor.h"
 #include "SolverActor.generated.h"
 
+
+USTRUCT(Blueprintable)
+struct UNREALVERLETSOLVER_API FParticlesData
+{
+	GENERATED_BODY()
+	
+	public:
+	TArray<FVector2D> arrPositions;
+	TArray<FVector2D> arrPositionsPrev;
+	TArray<FVector2D> arrAccelerations;
+	TArray<FVector2D> arrVelocities;
+
+};
+
+
 UCLASS(Blueprintable)
 class UNREALVERLETSOLVER_API ASolverActor : public AActor
 {
@@ -24,6 +39,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void UpdateSolver(float fDeltaTime);
 
 	virtual void OnConstruction(const FTransform& xTransform) override;
 
@@ -32,4 +48,22 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float PR_fSimBoundingBoxHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool PR_bDrawPositions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PR_iParticlesToSpawn;
+
+	float m_fParticlesRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PR_fRestitution;
+
+	FParticlesData m_xParticles;
+
+
+
+
+	void AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity);
 };
