@@ -35,7 +35,7 @@ void ASolverActor::BeginPlay()
 
 	for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
 	{
-		AddParticle(FVector2D(), FVector2D(FMath::RandRange(10, 100), FMath::RandRange(10, 100)));
+		AddParticle(FVector2D(20.0f, 20.0f), FVector2D(FMath::RandRange(10, 100), FMath::RandRange(10, 100)));
 	}
 }
 
@@ -44,15 +44,19 @@ void ASolverActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 10.0f);
+	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
 
 	UpdateSolver(DeltaTime);
 
 
 	for (const FVector2D& vPos : m_xParticles.arrPositions)
 	{
-		
-		DrawDebugSphere(GetWorld(),FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 4, FColor::Yellow);
+	
+		//DrawDebugSphere(GetWorld(),FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 4, FColor::Yellow);
+		DrawDebugCircle(GetWorld(),FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 34, FColor::Yellow, false, -1.0f, 0, 0.2f
+		, FVector(0.0f, 0.0f, 1.0f)
+		, FVector(1.0f, 0.0f, 0.0f)
+		, false);
 
 		if (PR_bDrawPositions)
 		{
@@ -84,15 +88,15 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 		//vVelocity = (vCurrentPos - vTempPosition) / fDeltaTime;
 
 		// Check and correct for boundaries
-		if (vCurrentPos.X < 0.0f || vCurrentPos.X > PR_fSimBoundingBoxWidth)
+		if (vCurrentPos.X - m_fParticlesRadius < 0.0f || vCurrentPos.X + m_fParticlesRadius > PR_fSimBoundingBoxWidth)
 		{
-			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, 0.0f, PR_fSimBoundingBoxWidth);
+			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, -m_fParticlesRadius, PR_fSimBoundingBoxWidth - m_fParticlesRadius);
 			vVelocity.X *= -PR_fRestitution;//vCurrentPos.X - (vCurrentPos.X - vPreviousPos.X);
 		}
 
-		if (vCurrentPos.Y < 0.0f || vCurrentPos.Y > PR_fSimBoundingBoxHeight)
+		if (vCurrentPos.Y - m_fParticlesRadius < 0.0f || vCurrentPos.Y + m_fParticlesRadius > PR_fSimBoundingBoxHeight)
 		{
-			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, 0.0f, PR_fSimBoundingBoxHeight);
+			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, -m_fParticlesRadius, PR_fSimBoundingBoxHeight - m_fParticlesRadius);
 			vVelocity.Y *= -PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
 		}
 	}
@@ -105,7 +109,7 @@ void ASolverActor::OnConstruction(const FTransform& xTransform)
 
 	UKismetSystemLibrary::FlushPersistentDebugLines(this);
 	/*DrawDebugBox(GetWorld(), GetActorLocation(), FVector(PR_fSimBoundingBoxWidth, PR_fSimBoundingBoxHeight, 0.0f), GetActorRotation().Quaternion(), FColor::Blue, true, 0.0f, 0, 4.0f);*/
-	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, true, 0.0f, 0, 10.0f);
+	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, true, 0.0f, 0, 2.0f);
 }
 
 void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity)
