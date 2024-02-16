@@ -3,6 +3,8 @@
 
 #include "SolverActor.h"
 
+#include "Collision/CollisionSolver_Naive.h"
+
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -14,6 +16,7 @@ ASolverActor::ASolverActor()
 , PR_bDrawPositions(false)
 , PR_iParticlesToSpawn(1)
 , PR_fRestitution(1.0f)
+, PR_CollisionSolver(nullptr)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -29,13 +32,20 @@ void ASolverActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
+
+	PR_CollisionSolver->InitialiseCollisionSolver(m_xParticles);
+
+
 	//AddParticle(FVector2D(), FVector2D(100.0f, 90.0f));
 	//AddParticle(FVector2D(), FVector2D(40.0f, 50.0f));
 	//AddParticle(FVector2D(), FVector2D(10.0f, 70.0f));
 
+	m_xParticles.m_fParticlesRadius = m_fParticlesRadius;
+
 	for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
 	{
-		AddParticle(FVector2D(20.0f, 20.0f), FVector2D(FMath::RandRange(10, 100), FMath::RandRange(10, 100)));
+		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(10, 100), FMath::RandRange(10, 100)));
 	}
 }
 
@@ -48,7 +58,7 @@ void ASolverActor::Tick(float DeltaTime)
 
 	UpdateSolver(DeltaTime);
 
-
+	int32 iIndex = 0;
 	for (const FVector2D& vPos : m_xParticles.arrPositions)
 	{
 	
@@ -62,14 +72,15 @@ void ASolverActor::Tick(float DeltaTime)
 		{
 			UKismetSystemLibrary::DrawDebugString(GetWorld(), FVector(vPos.X, 0.0f, vPos.Y), vPos.ToString());
 		}
+
+		
+
+		iIndex++;
 	}
 }
 
 void ASolverActor::UpdateSolver(float fDeltaTime)
 {   
-
-	
-
 	for (int32 i = 0; i < m_xParticles.arrPositions.Num(); i++)
 	{
 		FVector2D& vCurrentPos = m_xParticles.arrPositions[i];
@@ -99,6 +110,8 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, -m_fParticlesRadius, PR_fSimBoundingBoxHeight - m_fParticlesRadius);
 			vVelocity.Y *= -PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
 		}
+
+		PR_CollisionSolver->UpdateParticleCollision(i);
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "SolverActor.generated.h"
 
+class UCollisionSolver;
 
 USTRUCT(Blueprintable)
 struct UNREALVERLETSOLVER_API FParticlesData
@@ -18,6 +19,9 @@ struct UNREALVERLETSOLVER_API FParticlesData
 	TArray<FVector2D> arrPositionsPrev;
 	TArray<FVector2D> arrAccelerations;
 	TArray<FVector2D> arrVelocities;
+
+	float m_fParticlesRadius;
+	float fMass = 10.0f;
 
 };
 
@@ -62,7 +66,8 @@ public:
 
 	FParticlesData m_xParticles;
 
-
+	UPROPERTY()
+	UCollisionSolver* PR_CollisionSolver;
 
 
 	void AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity);
