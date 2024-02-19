@@ -45,7 +45,7 @@ void ASolverActor::BeginPlay()
 
 	for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
 	{
-		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(10, 100), FMath::RandRange(10, 100)));
+		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(10, 100), FMath::RandRange(0, 10)));
 	}
 }
 
@@ -83,6 +83,7 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 {   
 	for (int32 i = 0; i < m_xParticles.arrPositions.Num(); i++)
 	{
+
 		FVector2D& vCurrentPos = m_xParticles.arrPositions[i];
 		FVector2D& vPreviousPos = m_xParticles.arrPositionsPrev[i];
 		FVector2D& vAcceleration = m_xParticles.arrAccelerations[i];
@@ -90,31 +91,29 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 
 		// Verlet integration formula
 		FVector2D vTempPosition = m_xParticles.arrPositions[i];
-		//vCurrentPos += vCurrentPos - vPreviousPos + vAcceleration * FMath::Square(fDeltaTime);
+
 		vCurrentPos += vVelocity * fDeltaTime + 0.5f * vAcceleration * FMath::Square(fDeltaTime);
+
 		vPreviousPos = vTempPosition;
 
 		vVelocity += vAcceleration * fDeltaTime;
-		// Update velocity based on the change in position
-		//vVelocity = (vCurrentPos - vTempPosition) / fDeltaTime;
-
 	
 		// Check and correct for boundaries
 		if (vCurrentPos.X - m_fParticlesRadius < 0.0f || vCurrentPos.X + m_fParticlesRadius > PR_fSimBoundingBoxWidth)
 		{
-			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, -m_fParticlesRadius, PR_fSimBoundingBoxWidth - m_fParticlesRadius);
-			vVelocity.X *= -PR_fRestitution;//vCurrentPos.X - (vCurrentPos.X - vPreviousPos.X);
+			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, m_fParticlesRadius, PR_fSimBoundingBoxWidth - m_fParticlesRadius);
+			vVelocity.X = -vVelocity.X / 2;//PR_fRestitution;//vCurrentPos.X - (vCurrentPos.X - vPreviousPos.X);
 		}
 
 		if (vCurrentPos.Y - m_fParticlesRadius < 0.0f || vCurrentPos.Y + m_fParticlesRadius > PR_fSimBoundingBoxHeight)
 		{
-			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, -m_fParticlesRadius, PR_fSimBoundingBoxHeight - m_fParticlesRadius);
-			vVelocity.Y *= -PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
+			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, m_fParticlesRadius, PR_fSimBoundingBoxHeight - m_fParticlesRadius);
+			vVelocity.Y = -vVelocity.Y / 2; //PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
 		}
 
 
+		
 		PR_CollisionSolver->UpdateParticleCollision(i);
-
 
 	
 	}
@@ -133,7 +132,7 @@ void ASolverActor::OnConstruction(const FTransform& xTransform)
 void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity)
 {
 	m_xParticles.arrPositions.Add(vStartPosition);
-	m_xParticles.arrAccelerations.Add(vStartVelocity);
+	m_xParticles.arrAccelerations.Add(FVector2D::One());
 	m_xParticles.arrPositionsPrev.Add(vStartPosition);
 	m_xParticles.arrVelocities.Add(vStartVelocity);
 }
