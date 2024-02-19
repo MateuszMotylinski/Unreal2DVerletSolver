@@ -98,6 +98,7 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 		// Update velocity based on the change in position
 		//vVelocity = (vCurrentPos - vTempPosition) / fDeltaTime;
 
+	
 		// Check and correct for boundaries
 		if (vCurrentPos.X - m_fParticlesRadius < 0.0f || vCurrentPos.X + m_fParticlesRadius > PR_fSimBoundingBoxWidth)
 		{
@@ -111,7 +112,11 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 			vVelocity.Y *= -PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
 		}
 
+
 		PR_CollisionSolver->UpdateParticleCollision(i);
+
+
+	
 	}
 }
 

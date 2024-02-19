@@ -20,8 +20,8 @@ struct UNREALVERLETSOLVER_API FParticlesData
 	TArray<FVector2D> arrAccelerations;
 	TArray<FVector2D> arrVelocities;
 
-	float m_fParticlesRadius;
-	float fMass = 10.0f;
+	float m_fParticlesRadius = 4.0f;
+	float fMass = 1.0f;
 
 };
 

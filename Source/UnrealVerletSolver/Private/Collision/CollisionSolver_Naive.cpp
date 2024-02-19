@@ -28,9 +28,9 @@ void UCollisionSolver_Naive::UpdateParticleCollision(int32 iParticleIndex)
 
 bool UCollisionSolver_Naive::IsColliding(const FVector2D& vP1, const FVector2D& vP2, double fRadious)
 {
-	double distanceSquared = std::pow(vP1.X - vP2.X, 2) + std::pow(vP1.Y - vP2.Y, 2);
-	double radiusSquared = std::pow(fRadious, 2);
-	return distanceSquared <= radiusSquared;
+	double fDistSquared = FVector2D::DistSquared(vP1, vP2);
+	double radiusSquared = FMath::Square(fRadious + fRadious);
+	return fDistSquared <= radiusSquared;
 }
 
 void UCollisionSolver_Naive::HandleCollision(int32 iParticleIndex1, int32 iParticleIndex2)
@@ -48,8 +48,6 @@ void UCollisionSolver_Naive::HandleCollision(int32 iParticleIndex1, int32 iParti
 	float Distance = DeltaPosition.Size();
 	float RadiusSum = PR_ParticlesData->m_fParticlesRadius + PR_ParticlesData->m_fParticlesRadius;
 
-
-
 	if (Distance < RadiusSum)
 	{
 		DeltaPosition.Normalize();
@@ -62,35 +60,19 @@ void UCollisionSolver_Naive::HandleCollision(int32 iParticleIndex1, int32 iParti
 		FVector2D Correction = (0.5f * Overlap) * Normal;
 
 		// Move particles to resolve overlap
-		vP1 -= Correction;
-		vP2 += Correction;
+		//vP1 -= Correction;
+		//vP2 += Correction;
 
 		FVector2D DeltaVelocity = vVel2 - vVel1;
 		float RelativeVelocity = FVector2D::DotProduct(DeltaVelocity, Normal);
 
-		if (RelativeVelocity < 0)
-		{
-
 			float fP1Mass = PR_ParticlesData->fMass;
 			float fP2Mass = PR_ParticlesData->fMass;
 
-			float CoefficientOfRestitution = 0.8f;
-
-			// Calculate minimum impulse required for separation
-			float MinImpulse = (1 + CoefficientOfRestitution) * RelativeVelocity / (1 / PR_ParticlesData->fMass + 1 / PR_ParticlesData->fMass);
-
-			//if (MinImpulse > 0)
-			{
+			float CoefficientOfRestitution = 1.0f;//0.8f;
 				FVector2D Impulse = (2.0f * RelativeVelocity / (fP1Mass + fP2Mass)) * Normal;
 
-				vVel1 += Impulse / fP1Mass * 100;
-				vVel2 += -Impulse / fP2Mass * 100;
-			}
-
-			/*FVector2D Impulse = (2.0f * RelativeVelocity / (fP1Mass + fP2Mass)) * Normal;*/
-
-			/*vVel1 += Impulse / fP1Mass * 100;
-			vVel2 += -Impulse / fP2Mass * 100;*/
-		}
+				vVel1 += Impulse / fP1Mass;
+				vVel2 += -Impulse / fP2Mass;
 	}
 }
