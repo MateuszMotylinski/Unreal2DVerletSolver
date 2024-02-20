@@ -37,7 +37,7 @@ public:
 	}
 
 	FPointHashGrid2D()
-		:Indexer(200)
+		:Indexer(10)
 		, InvalidValue(-1)
 	{
 	}

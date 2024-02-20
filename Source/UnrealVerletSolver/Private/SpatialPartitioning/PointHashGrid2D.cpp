@@ -87,7 +87,7 @@ void FPointHashGrid2D::UpdatePointUnsafe(const int32& PointIndex, const FVector2
 		Hash.RemoveSingle(old_idx, PointIndex);
 	}
 
-	check(bWasAtOldPos);
+	//check(bWasAtOldPos);
 	Hash.Add(new_idx, PointIndex);
 	return;
 }
@@ -148,8 +148,10 @@ void FPointHashGrid2D::DebugDrawGrid(UObject& WorldObject)
 	{
 		FVector2f tGridPosition = Indexer.FromGrid(Position);
 
-		FVector2f position = static_cast<FVector2f>(tGridPosition);
-		FVector extent(Indexer.CellSize * 2, Indexer.CellSize * 2, Indexer.CellSize * 2);
+		//FVector2i idx = Indexer.ToGrid(FVector2f(Position.X, Position.Y));
+
+		FVector2f position = tGridPosition;
+		FVector extent(Indexer.CellSize * 2, 0, Indexer.CellSize * 2);
 
 		UKismetSystemLibrary::DrawDebugBox(&WorldObject, FVector(position.X, 0.0f, position.Y), extent, FLinearColor::Red);
 	}

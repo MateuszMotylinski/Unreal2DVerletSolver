@@ -4,6 +4,7 @@
 #include "SolverActor.h"
 
 #include "Collision/CollisionSolver_Naive.h"
+#include "Collision/CollisionSolver_PointHashGrid2D.h"
 
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -17,6 +18,8 @@ ASolverActor::ASolverActor()
 , PR_iParticlesToSpawn(1)
 , PR_fRestitution(1.0f)
 , PR_CollisionSolver(nullptr)
+, PR_bParticlesDebugDraw(true)
+, PR_bCollisionSolverDebugDraw(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,9 +35,7 @@ void ASolverActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
 
-	PR_CollisionSolver->InitialiseCollisionSolver(m_xParticles);
 
 
 	//AddParticle(FVector2D(), FVector2D(100.0f, 90.0f));
@@ -45,8 +46,13 @@ void ASolverActor::BeginPlay()
 
 	for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
 	{
-		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(10, 100), FMath::RandRange(0, 10)));
+		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(-100, 100), FMath::RandRange(-100, 100)));
 	}
+	
+	//PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
+	PR_CollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
+
+	PR_CollisionSolver->InitialiseCollisionSolver(m_xParticles);
 }
 
 // Called every frame
@@ -58,24 +64,32 @@ void ASolverActor::Tick(float DeltaTime)
 
 	UpdateSolver(DeltaTime);
 
-	int32 iIndex = 0;
-	for (const FVector2D& vPos : m_xParticles.arrPositions)
+	if (PR_bParticlesDebugDraw)
 	{
-	
-		//DrawDebugSphere(GetWorld(),FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 4, FColor::Yellow);
-		DrawDebugCircle(GetWorld(),FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 34, FColor::Yellow, false, -1.0f, 0, 0.2f
-		, FVector(0.0f, 0.0f, 1.0f)
-		, FVector(1.0f, 0.0f, 0.0f)
-		, false);
-
-		if (PR_bDrawPositions)
+		int32 iIndex = 0;
+		for (const FVector2D& vPos : m_xParticles.arrPositions)
 		{
-			UKismetSystemLibrary::DrawDebugString(GetWorld(), FVector(vPos.X, 0.0f, vPos.Y), vPos.ToString());
+
+			//DrawDebugSphere(GetWorld(),FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 4, FColor::Yellow);
+			DrawDebugCircle(GetWorld(), FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 34, FColor::Yellow, false, -1.0f, 0, 0.2f
+				, FVector(0.0f, 0.0f, 1.0f)
+				, FVector(1.0f, 0.0f, 0.0f)
+				, false);
+
+			if (PR_bDrawPositions)
+			{
+				UKismetSystemLibrary::DrawDebugString(GetWorld(), FVector(vPos.X, 0.0f, vPos.Y), vPos.ToString());
+			}
+
+
+
+			iIndex++;
 		}
+	}
 
-		
-
-		iIndex++;
+	if (PR_bCollisionSolverDebugDraw)
+	{
+		PR_CollisionSolver->DebugDraw();
 	}
 }
 
@@ -83,7 +97,6 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 {   
 	for (int32 i = 0; i < m_xParticles.arrPositions.Num(); i++)
 	{
-
 		FVector2D& vCurrentPos = m_xParticles.arrPositions[i];
 		FVector2D& vPreviousPos = m_xParticles.arrPositionsPrev[i];
 		FVector2D& vAcceleration = m_xParticles.arrAccelerations[i];

@@ -25,7 +25,6 @@ struct UNREALVERLETSOLVER_API FParticlesData
 
 };
 
-
 UCLASS(Blueprintable)
 class UNREALVERLETSOLVER_API ASolverActor : public AActor
 {
@@ -69,6 +68,12 @@ public:
 	UPROPERTY()
 	UCollisionSolver* PR_CollisionSolver;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool PR_bParticlesDebugDraw;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool PR_bCollisionSolverDebugDraw;
 
 	void AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity);
 };

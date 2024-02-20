@@ -25,6 +25,8 @@ class UNREALVERLETSOLVER_API UCollisionSolver : public UObject
 	// Calculates the new position after resolving collision
 	virtual void UpdateParticleCollision(int32 iParticleIndex) {};
 
+	virtual void DebugDraw() {};
+
 	protected:
 	// Function to check if two particles are colliding
 	bool IsColliding_CircleCircle(int32 iParticleIndex1, int32 iParticleIndex2);
