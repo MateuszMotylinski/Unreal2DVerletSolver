@@ -8,14 +8,14 @@
 
 #include "SpatialPartitioning/PointHashGrid2D.h"
 
-void FPointHashGrid::ReconstructGrid(float NewCellSize, int32 NewInvalidValue)
+void FPointHashGrid2D::ReconstructGrid(float NewCellSize, int32 NewInvalidValue)
 {
 	this->Hash.Empty();
 	Indexer.CellSize = NewCellSize;
 	InvalidValue = NewInvalidValue;
 }
 
-void FPointHashGrid::InsertPoint(const int32& PointIndex, const FVector2f& Position)
+void FPointHashGrid2D::InsertPoint(const int32& PointIndex, const FVector2f& Position)
 {
 	FVector2i idx = Indexer.ToGrid(Position);
 	{
@@ -24,13 +24,13 @@ void FPointHashGrid::InsertPoint(const int32& PointIndex, const FVector2f& Posit
 	}
 }
 
-void FPointHashGrid::InsertPointUnsafe(const int32& PointIndex, const FVector2f& Position)
+void FPointHashGrid2D::InsertPointUnsafe(const int32& PointIndex, const FVector2f& Position)
 {
 	FVector2i idx = Indexer.ToGrid(Position);
 	Hash.Add(idx, PointIndex);
 }
 
-bool FPointHashGrid::RemovePoint(const int32& PointIndex, const FVector2f& Position)
+bool FPointHashGrid2D::RemovePoint(const int32& PointIndex, const FVector2f& Position)
 {
 	FVector2i idx = Indexer.ToGrid(Position);
 	{
@@ -39,13 +39,13 @@ bool FPointHashGrid::RemovePoint(const int32& PointIndex, const FVector2f& Posit
 	}
 }
 
-bool FPointHashGrid::RemovePointUnsafe(const int32& PointIndex, const FVector2f& Position)
+bool FPointHashGrid2D::RemovePointUnsafe(const int32& PointIndex, const FVector2f& Position)
 {
 	FVector2i idx = Indexer.ToGrid(Position);
 	return Hash.RemoveSingle(idx, PointIndex) > 0;
 }
 
-void FPointHashGrid::UpdatePoint(const int32& PointIndex, const FVector2f& OldPosition, const FVector2f& NewPosition)
+void FPointHashGrid2D::UpdatePoint(const int32& PointIndex, const FVector2f& OldPosition, const FVector2f& NewPosition)
 {
 	FVector2i old_idx = Indexer.ToGrid(OldPosition);
 	FVector2i new_idx = Indexer.ToGrid(NewPosition);
@@ -71,7 +71,7 @@ void FPointHashGrid::UpdatePoint(const int32& PointIndex, const FVector2f& OldPo
 	return;
 }
 
-void FPointHashGrid::UpdatePointUnsafe(const int32& PointIndex, const FVector2f& OldPosition, const FVector2f& NewPosition)
+void FPointHashGrid2D::UpdatePointUnsafe(const int32& PointIndex, const FVector2f& OldPosition, const FVector2f& NewPosition)
 {
 	FVector2i old_idx = Indexer.ToGrid(OldPosition);
 	FVector2i new_idx = Indexer.ToGrid(NewPosition);
@@ -92,7 +92,7 @@ void FPointHashGrid::UpdatePointUnsafe(const int32& PointIndex, const FVector2f&
 	return;
 }
 
-void FPointHashGrid::GetPointsInSphere(const FVector2f& SphereOrigin, float SphereRadius, TArray<int32>& ArrayOfPoints)
+void FPointHashGrid2D::GetPointsInSphere(const FVector2f& SphereOrigin, float SphereRadius, TArray<int32>& ArrayOfPoints)
 {
 	if (!Hash.Num())
 	{
@@ -115,7 +115,7 @@ void FPointHashGrid::GetPointsInSphere(const FVector2f& SphereOrigin, float Sphe
 	}
 }
 
-void FPointHashGrid::GetPointsInBox(const FBox& Box, TArray<int32>& ArrayOfPoints)
+void FPointHashGrid2D::GetPointsInBox(const FBox& Box, TArray<int32>& ArrayOfPoints)
 {
 	if (!Hash.Num())
 	{
@@ -138,7 +138,7 @@ void FPointHashGrid::GetPointsInBox(const FBox& Box, TArray<int32>& ArrayOfPoint
 	}
 }
 
-void FPointHashGrid::DebugDrawGrid(UObject& WorldObject)
+void FPointHashGrid2D::DebugDrawGrid(UObject& WorldObject)
 {
 	TArray<FVector2i> tPositions;
 

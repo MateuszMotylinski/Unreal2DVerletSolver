@@ -22,7 +22,7 @@ using namespace UE;
 using namespace Geometry;
 using namespace UE::Math;
 
-class FPointHashGrid
+class FPointHashGrid2D
 {
 
 public:
@@ -32,11 +32,11 @@ public:
 	 * @param cellSize size of grid cells
 	 * @param InvalidValue this value will be returned by queries if no valid result is found (e.g. bounded-distance query)
 	 */
-	FPointHashGrid(float cellSize, int32 InvalidValue = -1) : Indexer(cellSize), InvalidValue(InvalidValue)
+	FPointHashGrid2D(float cellSize, int32 InvalidValue = -1) : Indexer(cellSize), InvalidValue(InvalidValue)
 	{
 	}
 
-	FPointHashGrid()
+	FPointHashGrid2D()
 		:Indexer(200)
 		, InvalidValue(-1)
 	{
