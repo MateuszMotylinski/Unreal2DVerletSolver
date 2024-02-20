@@ -27,9 +27,11 @@ class UNREALVERLETSOLVER_API UCollisionSolver : public UObject
 
 	protected:
 	// Function to check if two particles are colliding
-	bool IsColliding(const FVector2D& vP1, const FVector2D& vP2, double fRadious);
+	bool IsColliding_CircleCircle(int32 iParticleIndex1, int32 iParticleIndex2);
 
 	void HandleCollision(int32 iParticleIndex1, int32 iParticleIndex2);
+
+	void CheckAndHandleCollision(int32 iParticleIndex1, int32 iParticleIndex2);
 
 	protected:
 	FParticlesData* PR_ParticlesData;

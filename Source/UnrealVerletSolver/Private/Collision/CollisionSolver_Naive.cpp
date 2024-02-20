@@ -16,11 +16,13 @@ void UCollisionSolver_Naive::UpdateParticleCollision(int32 iParticleIndex)
 	int32 iIndex = 0;
 	for (const FVector2D& vOtherPos : PR_ParticlesData->arrPositions)
 	{
-		if(iIndex != iParticleIndex
-		&& IsColliding(vPos, vOtherPos, PR_ParticlesData->m_fParticlesRadius))
-		{
-			HandleCollision(iParticleIndex, iIndex);
-		}
+		/*	if(iIndex != iParticleIndex
+			&& IsColliding_CircleCircle(iParticleIndex, iIndex))
+			{
+				CheckAndHandleCollision(iParticleIndex, iIndex);
+			}*/
+
+		CheckAndHandleCollision(iParticleIndex, iIndex);
 		iIndex++;
 	}
 
