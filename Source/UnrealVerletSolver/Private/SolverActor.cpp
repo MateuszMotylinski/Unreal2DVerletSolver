@@ -21,7 +21,7 @@ ASolverActor::ASolverActor()
 , PR_iParticlesToSpawn(1)
 , PR_fRestitution(1.0f)
 , PR_pCollisionSolver(nullptr)
-, PR_bParticlesDebugDraw(true)
+, PR_bParticlesDebugDraw(false)
 , PR_bCollisionSolverDebugDraw(false)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
