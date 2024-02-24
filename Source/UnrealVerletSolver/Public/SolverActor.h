@@ -8,6 +8,7 @@
 #include "SolverActor.generated.h"
 
 class UCollisionSolver;
+class UNiagaraRenderer;
 
 USTRUCT(Blueprintable)
 struct UNREALVERLETSOLVER_API FParticlesData
@@ -74,6 +75,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool PR_bCollisionSolverDebugDraw;
+
+	UPROPERTY()
+		UNiagaraRenderer* pRenderer;
 
 	void AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity);
 };

@@ -5,6 +5,7 @@
 
 #include "Collision/CollisionSolver_Naive.h"
 #include "Collision/CollisionSolver_PointHashGrid2D.h"
+#include "Rendering/NiagaraRenderer.h"
 
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -21,6 +22,7 @@ ASolverActor::ASolverActor()
 , PR_bParticlesDebugDraw(true)
 , PR_bCollisionSolverDebugDraw(false)
 {
+	pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -53,6 +55,9 @@ void ASolverActor::BeginPlay()
 	PR_CollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
 
 	PR_CollisionSolver->InitialiseCollisionSolver(m_xParticles);
+
+	pRenderer->Initialise(PR_iParticlesToSpawn);
+	pRenderer->UpdateParitclePositions(m_xParticles.arrPositions);
 }
 
 // Called every frame
@@ -91,6 +96,8 @@ void ASolverActor::Tick(float DeltaTime)
 	{
 		PR_CollisionSolver->DebugDraw();
 	}
+
+	pRenderer->UpdateParitclePositions(m_xParticles.arrPositions);
 }
 
 void ASolverActor::UpdateSolver(float fDeltaTime)
