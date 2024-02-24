@@ -6,17 +6,21 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraDataInterfaceArrayFunctionLibrary.h"
+#include "NiagaraSystem.h"
 
 #define NS_VARIABLE_PARTICLES_POSITIONS	"arrParticlesPositions"
 #define NS_VARIABLE_PARTICLES_NUM	"iParticlesNumToSpawn"
 
 UNiagaraRenderer::UNiagaraRenderer()
 {
-	PR_NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
+	PR_pNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
 }
 
-void UNiagaraRenderer::Initialise(int32 iNumberOfParticles)
+void UNiagaraRenderer::Initialise(UNiagaraSystem* pNiagaraSystem, int32 iNumberOfParticles)
 {
+
+	PR_pNiagaraComponent->SetAsset(pNiagaraSystem);
+
 	for (int32 i = 0; i < iNumberOfParticles; i++)
 	{
 		PR_arrParticlesPositions.Add(FVector2D());
@@ -25,6 +29,6 @@ void UNiagaraRenderer::Initialise(int32 iNumberOfParticles)
 
 void UNiagaraRenderer::UpdateParitclePositions(const TArray<FVector2D>& arrPositions)
 {
-	PR_NiagaraComponent->SetIntParameter(NS_VARIABLE_PARTICLES_NUM, arrPositions.Num());
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector2D(PR_NiagaraComponent, NS_VARIABLE_PARTICLES_POSITIONS, arrPositions);
+	PR_pNiagaraComponent->SetIntParameter(NS_VARIABLE_PARTICLES_NUM, arrPositions.Num());
+	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector2D(PR_pNiagaraComponent, NS_VARIABLE_PARTICLES_POSITIONS, arrPositions);
 }

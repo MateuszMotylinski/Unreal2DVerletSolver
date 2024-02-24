@@ -9,6 +9,7 @@
 #include "NiagaraRenderer.generated.h"
 
 class UNiagaraComponent;
+class UNiagaraSystem;
 /**
  * 
  */
@@ -21,13 +22,13 @@ class UNREALVERLETSOLVER_API UNiagaraRenderer : public UObject
 	UNiagaraRenderer();
 
 
-	void Initialise(int32 iNumberOfParticles);
+	void Initialise(UNiagaraSystem* pNiagaraSystem,  int32 iNumberOfParticles);
 
 	void UpdateParitclePositions(const TArray<FVector2D>& arrPositions);
 
 protected:
 	UPROPERTY()
-	UNiagaraComponent* PR_NiagaraComponent;
+	UNiagaraComponent* PR_pNiagaraComponent;
 
 	UPROPERTY()
 	TArray<FVector2D> PR_arrParticlesPositions;

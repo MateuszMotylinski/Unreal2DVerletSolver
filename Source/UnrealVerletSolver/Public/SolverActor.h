@@ -9,6 +9,7 @@
 
 class UCollisionSolver;
 class UNiagaraRenderer;
+class UNiagaraSystem;
 
 USTRUCT(Blueprintable)
 struct UNREALVERLETSOLVER_API FParticlesData
@@ -67,7 +68,7 @@ public:
 	FParticlesData m_xParticles;
 
 	UPROPERTY()
-	UCollisionSolver* PR_CollisionSolver;
+	UCollisionSolver* PR_pCollisionSolver;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -76,8 +77,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool PR_bCollisionSolverDebugDraw;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UNiagaraSystem* PR_pNiagaraSystemAsset;
+
 	UPROPERTY()
-		UNiagaraRenderer* pRenderer;
+		UNiagaraRenderer* PR_pRenderer;
 
 	void AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity);
 };
