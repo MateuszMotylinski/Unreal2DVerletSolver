@@ -25,6 +25,6 @@ void UNiagaraRenderer::Initialise(int32 iNumberOfParticles)
 
 void UNiagaraRenderer::UpdateParitclePositions(const TArray<FVector2D>& arrPositions)
 {
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayInt32(PR_NiagaraComponent, NS_VARIABLE_PARTICLES_NUM, arrPositions.Num());
+	PR_NiagaraComponent->SetIntParameter(NS_VARIABLE_PARTICLES_NUM, arrPositions.Num());
 	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector2D(PR_NiagaraComponent, NS_VARIABLE_PARTICLES_POSITIONS, arrPositions);
 }
