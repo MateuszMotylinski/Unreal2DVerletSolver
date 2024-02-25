@@ -12,6 +12,8 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+#define GRAVITY -9.8      // Gravitational acceleration in the y-direction (m/s^2)
+
 // Sets default values
 ASolverActor::ASolverActor()
 :PR_fSimBoundingBoxWidth(100.0f)
@@ -50,7 +52,7 @@ void ASolverActor::BeginPlay()
 
 	for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
 	{
-		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(-100, 100), FMath::RandRange(-100, 100)));
+		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(-10, 10), FMath::RandRange(-10, 10)));
 	}
 	
 	//PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
@@ -106,6 +108,8 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 {   
 	for (int32 i = 0; i < m_xParticles.arrPositions.Num(); i++)
 	{
+		
+
 		FVector2D& vCurrentPos = m_xParticles.arrPositions[i];
 		FVector2D& vPreviousPos = m_xParticles.arrPositionsPrev[i];
 		FVector2D& vAcceleration = m_xParticles.arrAccelerations[i];
@@ -133,11 +137,7 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 			vVelocity.Y = -vVelocity.Y / 2; //PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
 		}
 
-
-		
 		PR_pCollisionSolver->UpdateParticleCollision(i);
-
-	
 	}
 }
 
@@ -154,7 +154,7 @@ void ASolverActor::OnConstruction(const FTransform& xTransform)
 void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity)
 {
 	m_xParticles.arrPositions.Add(vStartPosition);
-	m_xParticles.arrAccelerations.Add(FVector2D::One());
+	m_xParticles.arrAccelerations.Add(FVector2D(0.0f, GRAVITY));
 	m_xParticles.arrPositionsPrev.Add(vStartPosition);
 	m_xParticles.arrVelocities.Add(vStartVelocity);
 }
