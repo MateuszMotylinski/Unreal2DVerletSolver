@@ -108,6 +108,12 @@ void UCollisionSolver::CheckAndHandleCollision(int32 iParticleIndex1, int32 iPar
 
 void UCollisionSolver::CheckAndHandleCollision2(int32 iParticleIndex1, int32 iParticleIndex2)
 {
+	if (iParticleIndex1 == iParticleIndex2)
+	{
+		return;
+	}
+
+
 	FVector2D& vP1 = PR_ParticlesData->arrPositions[iParticleIndex1];
 	FVector2D& vP2 = PR_ParticlesData->arrPositions[iParticleIndex2];
 
