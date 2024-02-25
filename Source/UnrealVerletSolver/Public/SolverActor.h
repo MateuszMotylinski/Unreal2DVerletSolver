@@ -70,6 +70,14 @@ public:
 	UPROPERTY()
 	UCollisionSolver* PR_pCollisionSolver;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	 int32 PR_iSubsteps;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool PR_bUseGravity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool PR_bBounceFromBoundary;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool PR_bParticlesDebugDraw;

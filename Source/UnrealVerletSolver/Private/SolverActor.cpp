@@ -25,6 +25,9 @@ ASolverActor::ASolverActor()
 , PR_pCollisionSolver(nullptr)
 , PR_bParticlesDebugDraw(false)
 , PR_bCollisionSolverDebugDraw(false)
+, PR_iSubsteps(1)
+, PR_bUseGravity(true)
+, PR_bBounceFromBoundary(false)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -73,7 +76,13 @@ void ASolverActor::Tick(float DeltaTime)
 	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
 
 	//UpdateSolver(0.001f);
-	UpdateSolver(DeltaTime);
+	
+	const float fSubDT = DeltaTime / static_cast<float>(PR_iSubsteps);
+
+	for (int32 iSubstep = 0; iSubstep < PR_iSubsteps; iSubstep++)
+	{
+		UpdateSolver(fSubDT);
+	}
 
 	if (PR_bParticlesDebugDraw)
 	{
@@ -110,40 +119,47 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 {   
 	for (int32 i = 0; i < m_xParticles.arrPositions.Num(); i++)
 	{
-		
-
 		FVector2D& vCurrentPos = m_xParticles.arrPositions[i];
 		FVector2D& vPreviousPos = m_xParticles.arrPositionsPrev[i];
 		FVector2D& vAcceleration = m_xParticles.arrAccelerations[i];
 		FVector2D& vVelocity = m_xParticles.arrVelocities[i];
 
-		// Verlet integration formula
 		FVector2D vTempPosition = m_xParticles.arrPositions[i];
 
 		/*vCurrentPos += vVelocity * fDeltaTime + 0.5f * vAcceleration * FMath::Square(fDeltaTime);*/
+
+		// Verlet integration
 		vCurrentPos = 2 * vCurrentPos - vPreviousPos + vAcceleration * FMath::Square(fDeltaTime);
 
-
+		// Set velocity (CurrentPos - PreviousPos)
+		vVelocity = vCurrentPos - vPreviousPos;
+		
+		// Update previous position vector
 		vPreviousPos = vTempPosition;
 
-		vVelocity += vAcceleration * fDeltaTime;
-	
 		PR_pCollisionSolver->UpdateParticleCollision(i);
+
 
 		// Check and correct for boundaries
 		if (vCurrentPos.X - m_fParticlesRadius < 0.0f || vCurrentPos.X + m_fParticlesRadius > PR_fSimBoundingBoxWidth)
 		{
 			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, m_fParticlesRadius, PR_fSimBoundingBoxWidth - m_fParticlesRadius);
-			//vVelocity.X = -vVelocity.X / 2;//PR_fRestitution;//vCurrentPos.X - (vCurrentPos.X - vPreviousPos.X);
+			
+			if (PR_bBounceFromBoundary)
+			{
+				vCurrentPos.X -= vVelocity.X / 2;
+			}
 		}
 
 		if (vCurrentPos.Y - m_fParticlesRadius < 0.0f || vCurrentPos.Y + m_fParticlesRadius > PR_fSimBoundingBoxHeight)
 		{
 			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, m_fParticlesRadius, PR_fSimBoundingBoxHeight - m_fParticlesRadius);
-			//vVelocity.Y = -vVelocity.Y / 2; //PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
-		}
 
-		
+			if (PR_bBounceFromBoundary)
+			{
+				vCurrentPos.Y -= vVelocity.Y / 2;
+			}
+		}
 	}
 }
 
@@ -160,7 +176,16 @@ void ASolverActor::OnConstruction(const FTransform& xTransform)
 void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity)
 {
 	m_xParticles.arrPositions.Add(vStartPosition);
-	m_xParticles.arrAccelerations.Add(FVector2D(0.0f, GRAVITY));
+
+	if (PR_bUseGravity)
+	{
+		m_xParticles.arrAccelerations.Add(FVector2D(0.0f, GRAVITY));
+	}
+	else
+	{
+		m_xParticles.arrAccelerations.Add(vStartVelocity);
+	}
+	
 	m_xParticles.arrPositionsPrev.Add(vStartPosition);
 	m_xParticles.arrVelocities.Add(vStartVelocity);
 }
