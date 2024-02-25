@@ -128,20 +128,22 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 
 		vVelocity += vAcceleration * fDeltaTime;
 	
+		PR_pCollisionSolver->UpdateParticleCollision(i);
+
 		// Check and correct for boundaries
 		if (vCurrentPos.X - m_fParticlesRadius < 0.0f || vCurrentPos.X + m_fParticlesRadius > PR_fSimBoundingBoxWidth)
 		{
 			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, m_fParticlesRadius, PR_fSimBoundingBoxWidth - m_fParticlesRadius);
-			vVelocity.X = -vVelocity.X / 2;//PR_fRestitution;//vCurrentPos.X - (vCurrentPos.X - vPreviousPos.X);
+			//vVelocity.X = -vVelocity.X / 2;//PR_fRestitution;//vCurrentPos.X - (vCurrentPos.X - vPreviousPos.X);
 		}
 
 		if (vCurrentPos.Y - m_fParticlesRadius < 0.0f || vCurrentPos.Y + m_fParticlesRadius > PR_fSimBoundingBoxHeight)
 		{
 			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, m_fParticlesRadius, PR_fSimBoundingBoxHeight - m_fParticlesRadius);
-			vVelocity.Y = -vVelocity.Y / 2; //PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
+			//vVelocity.Y = -vVelocity.Y / 2; //PR_fRestitution;//vCurrentPos.Y - (vCurrentPos.Y - vPreviousPos.Y);
 		}
 
-		PR_pCollisionSolver->UpdateParticleCollision(i);
+		
 	}
 }
 

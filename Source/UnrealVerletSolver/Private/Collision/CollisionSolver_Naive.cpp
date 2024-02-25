@@ -22,7 +22,7 @@ void UCollisionSolver_Naive::UpdateParticleCollision(int32 iParticleIndex)
 				CheckAndHandleCollision(iParticleIndex, iIndex);
 			}*/
 
-		CheckAndHandleCollision(iParticleIndex, iIndex);
+		CheckAndHandleCollision2(iParticleIndex, iIndex);
 		iIndex++;
 	}
 

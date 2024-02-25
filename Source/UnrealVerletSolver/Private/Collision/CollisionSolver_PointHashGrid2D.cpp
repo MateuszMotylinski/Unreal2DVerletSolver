@@ -37,7 +37,7 @@ void UCollisionSolver_PointHashGrid2D::UpdateParticleCollision(int32 iParticleIn
 
 	for (int32 iIndex : arrIndexes)
 	{
-		CheckAndHandleCollision(iParticleIndex, iIndex);
+		CheckAndHandleCollision2(iParticleIndex, iIndex);
 	}
 }
 

@@ -34,6 +34,7 @@ class UNREALVERLETSOLVER_API UCollisionSolver : public UObject
 	void HandleCollision(int32 iParticleIndex1, int32 iParticleIndex2);
 
 	void CheckAndHandleCollision(int32 iParticleIndex1, int32 iParticleIndex2);
+	void CheckAndHandleCollision2(int32 iParticleIndex1, int32 iParticleIndex2);
 
 	protected:
 	FParticlesData* PR_ParticlesData;

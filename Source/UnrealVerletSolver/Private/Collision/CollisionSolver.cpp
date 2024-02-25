@@ -93,11 +93,10 @@ void UCollisionSolver::CheckAndHandleCollision(int32 iParticleIndex1, int32 iPar
 	vVel1 = vVel1 - p * fP1Mass * vNormal;
 	vVel2 = vVel2 + p * fP2Mass * vNormal;
 
-
 	// If after we applied the force the circles are still colliding, then separate them
 	double fOverlap = fRadiusSum - fDist;
 
-	if (fOverlap > 0)
+	if (fOverlap > 0.0f)
 	{
 
 		FVector2D vMoveVector = (0.5f * fOverlap) * vNormal;
@@ -105,5 +104,34 @@ void UCollisionSolver::CheckAndHandleCollision(int32 iParticleIndex1, int32 iPar
 		vP1 -= vMoveVector;
 		vP2 += vMoveVector;
 	}
+}
 
+void UCollisionSolver::CheckAndHandleCollision2(int32 iParticleIndex1, int32 iParticleIndex2)
+{
+	FVector2D& vP1 = PR_ParticlesData->arrPositions[iParticleIndex1];
+	FVector2D& vP2 = PR_ParticlesData->arrPositions[iParticleIndex2];
+
+	double fDist = FVector2D::Distance(vP1, vP2);
+	double fRadiusSum = PR_ParticlesData->m_fParticlesRadius + PR_ParticlesData->m_fParticlesRadius;
+
+	FVector2D vDir = vP2 - vP1;
+	float fDinstanceSq = vDir.X * vDir.X + vDir.Y * vDir.Y;
+
+	float fP1Mass = PR_ParticlesData->fMass;
+	float fP2Mass = PR_ParticlesData->fMass;
+
+	float fRestitution1 = 1.0f;
+	float fRestitution2 = 1.0f;
+	// objects in collision
+	if (fRadiusSum * fRadiusSum > fDinstanceSq)
+	{
+		float fDistance = sqrt(fDinstanceSq);
+		float fMassSum = fP1Mass + fP2Mass;
+		FVector2D vNormalDir = vDir / (fDistance * fMassSum);
+		float fDirAdjust = 0.5 * fRestitution1 * fRestitution2 * (fRadiusSum - fDistance);
+
+		// apply collision
+		vP1 -= vNormalDir * fP2Mass * fDirAdjust;
+		vP2 += vNormalDir * fP1Mass * fDirAdjust;
+	}
 }
