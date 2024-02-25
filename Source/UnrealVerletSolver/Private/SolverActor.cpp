@@ -29,6 +29,7 @@ ASolverActor::ASolverActor()
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.TickInterval = 0.1f;
 
 	if (!GEngine)
 	{
@@ -71,6 +72,7 @@ void ASolverActor::Tick(float DeltaTime)
 
 	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
 
+	//UpdateSolver(0.001f);
 	UpdateSolver(DeltaTime);
 
 	if (PR_bParticlesDebugDraw)
@@ -118,7 +120,9 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 		// Verlet integration formula
 		FVector2D vTempPosition = m_xParticles.arrPositions[i];
 
-		vCurrentPos += vVelocity * fDeltaTime + 0.5f * vAcceleration * FMath::Square(fDeltaTime);
+		/*vCurrentPos += vVelocity * fDeltaTime + 0.5f * vAcceleration * FMath::Square(fDeltaTime);*/
+		vCurrentPos = 2 * vCurrentPos - vPreviousPos + vAcceleration * FMath::Square(fDeltaTime);
+
 
 		vPreviousPos = vTempPosition;
 
