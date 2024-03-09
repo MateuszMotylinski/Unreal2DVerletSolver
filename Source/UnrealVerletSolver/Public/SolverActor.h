@@ -71,19 +71,30 @@ public:
 	UCollisionSolver* PR_pCollisionSolver;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool PR_bFullPhysicsSimulation = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 	 int32 PR_iSubsteps;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 	bool PR_bUseGravity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 	bool PR_bBounceFromBoundary;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DebugDraw")
 		bool PR_bParticlesDebugDraw;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DebugDraw")
 		bool PR_bCollisionSolverDebugDraw;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	float PR_fMinInitialParticleVelocity = -10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+		float PR_fMaxInitialParticleVelocity = 10;
+
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UNiagaraSystem* PR_pNiagaraSystemAsset;
