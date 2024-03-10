@@ -25,8 +25,13 @@ ASolverActor::ASolverActor()
 , PR_bParticlesDebugDraw(false)
 , PR_bCollisionSolverDebugDraw(false)
 , PR_iSubsteps(1)
+, PR_bFullPhysicsSimulation(true)
 , PR_bUseGravity(true)
 , PR_bBounceFromBoundary(false)
+, PR_fMinInitialParticleVelocity(-1.0f)
+, PR_fMaxInitialParticleVelocity(1.0f)
+, PR_fGravityMultiplier(1.0f)
+, PR_bBurstSpawn(true)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.

@@ -69,7 +69,7 @@ public:
 	UCollisionSolver* PR_pCollisionSolver;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool PR_bFullPhysicsSimulation = true;
+	bool PR_bFullPhysicsSimulation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 	 int32 PR_iSubsteps;
@@ -80,24 +80,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		bool PR_bBounceFromBoundary;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+		float PR_fMinInitialParticleVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+		float PR_fMaxInitialParticleVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+		float PR_fGravityMultiplier;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DebugDraw")
 		bool PR_bParticlesDebugDraw;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DebugDraw")
 		bool PR_bCollisionSolverDebugDraw;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
-		float PR_fMinInitialParticleVelocity = -10;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
-		float PR_fMaxInitialParticleVelocity = 10;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
-		float PR_fGravityMultiplier = 1;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
-		bool PR_bBurstSpawn = true;
+		bool PR_bBurstSpawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		FVector2D PR_vParticlesSpawnPoint;
