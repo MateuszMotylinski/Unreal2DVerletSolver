@@ -72,9 +72,10 @@ void ASolverActor::Tick(float DeltaTime)
 
 	if (!PR_bBurstSpawn && m_xParticles.arrPositions.Num() < PR_iParticlesToSpawn)
 	{
-		AddParticle(PR_vParticlesSpawnPoint, FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
+		FVector2D vRandomPosOffset = FVector2D(FMath::RandRange(-10, 10), FMath::RandRange(-10, 10));
+		AddParticle(PR_vParticlesSpawnPoint + vRandomPosOffset, FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
 
-		PR_pCollisionSolver->InsertsParticle(PR_vParticlesSpawnPoint);
+		PR_pCollisionSolver->InsertsParticle(m_xParticles.arrPositions.Num() - 1, PR_vParticlesSpawnPoint);
 		PR_pRenderer->Reinit(m_xParticles.arrPositions.Num());
 	}
 

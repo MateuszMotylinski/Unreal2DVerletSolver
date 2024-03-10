@@ -19,7 +19,7 @@ public:
 	UCollisionSolver_PointHashGrid2D();
 	virtual void InitialiseCollisionSolver(FParticlesData& arrParticles) override;
 	virtual void UpdateParticleCollision(int32 iParticleIndex) override;
-	virtual void InsertsParticle(const FVector2D& vParticlePosition) override;
+	virtual void InsertsParticle(int32 iParticleIndex, const FVector2D& vParticlePosition) override;
 
 	virtual void DebugDraw() override;
 

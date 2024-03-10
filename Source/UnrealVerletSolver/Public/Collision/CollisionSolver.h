@@ -20,7 +20,7 @@ class UNREALVERLETSOLVER_API UCollisionSolver : public UObject
 	
 	public:
 	virtual void InitialiseCollisionSolver(FParticlesData& arrParticles) {PR_ParticlesData = &arrParticles;};
-	virtual void InsertsParticle(const FVector2D& vParticlePosition) {};
+	virtual void InsertsParticle(int32 iParticleIndex,  const FVector2D& vParticlePosition) {};
 
 	// Calculates the new position after resolving collision
 	virtual void UpdateParticleCollision(int32 iParticleIndex) {};
