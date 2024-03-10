@@ -196,7 +196,7 @@ void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D&
 
 	if (PR_bUseGravity)
 	{
-		m_xParticles.arrAccelerations.Add(FVector2D(0.0f, GRAVITY));
+		m_xParticles.arrAccelerations.Add(FVector2D(0.0f, GRAVITY * PR_fGravityMultiplier));
 	}
 	else
 	{

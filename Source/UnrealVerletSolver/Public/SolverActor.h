@@ -92,6 +92,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		float PR_fMaxInitialParticleVelocity = 10;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+		float PR_fGravityMultiplier = 1;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
 		bool PR_bBurstSpawn = true;
