@@ -41,6 +41,11 @@ void UCollisionSolver_PointHashGrid2D::UpdateParticleCollision(int32 iParticleIn
 	}
 }
 
+void UCollisionSolver_PointHashGrid2D::InsertsParticle(const FVector2D& vParticlePosition)
+{
+	spPointHashGrid2D->InsertPoint(PR_ParticlesData->arrPositions.Num() - 1, FVector2f(vParticlePosition.X, vParticlePosition.Y));
+}
+
 void UCollisionSolver_PointHashGrid2D::DebugDraw()
 {
 	spPointHashGrid2D->DebugDrawGrid(*this);

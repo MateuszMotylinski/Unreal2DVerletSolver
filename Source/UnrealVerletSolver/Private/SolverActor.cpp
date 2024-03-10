@@ -21,7 +21,6 @@ ASolverActor::ASolverActor()
 , m_fParticlesRadius(4.0f)
 , PR_bDrawPositions(false)
 , PR_iParticlesToSpawn(1)
-, PR_fRestitution(1.0f)
 , PR_pCollisionSolver(nullptr)
 , PR_bParticlesDebugDraw(false)
 , PR_bCollisionSolverDebugDraw(false)
@@ -47,11 +46,16 @@ void ASolverActor::BeginPlay()
 
 	m_xParticles.m_fParticlesRadius = m_fParticlesRadius;
 
-	for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
+	PR_vParticlesSpawnPoint = FVector2D(PR_fSimBoundingBoxWidth / 2, PR_fSimBoundingBoxHeight / 2);
+
+	if (PR_bBurstSpawn)
 	{
-		AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
+		for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
+		{
+			AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
+		}
 	}
-	
+
 	//PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
 	PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
 
@@ -65,6 +69,14 @@ void ASolverActor::BeginPlay()
 void ASolverActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!PR_bBurstSpawn && m_xParticles.arrPositions.Num() < PR_iParticlesToSpawn)
+	{
+		AddParticle(PR_vParticlesSpawnPoint, FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
+
+		PR_pCollisionSolver->InsertsParticle(PR_vParticlesSpawnPoint);
+		PR_pRenderer->Reinit(m_xParticles.arrPositions.Num());
+	}
 
 	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
 
@@ -126,8 +138,13 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 			//vPreviousPos += vVelocity / 2;
 		}
 
+		if (!PR_bFullPhysicsSimulation)
+		{
+			vAcceleration = FVector2D::Zero();
+		}
+
 		//vPreviousPos = (PR_bForceNullAccelerationAndVelocity) ? vPreviousPos : vCurrentPos;
-		vAcceleration = (!PR_bFullPhysicsSimulation) ? vAcceleration : FVector2D::Zero();
+		//vAcceleration = (!PR_bFullPhysicsSimulation) ? vAcceleration : FVector2D::Zero();
 
 		// Verlet integration
 		vCurrentPos = 2 * vCurrentPos - vPreviousPos + vAcceleration * FMath::Square(fDeltaTime);

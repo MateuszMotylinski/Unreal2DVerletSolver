@@ -23,6 +23,7 @@ class UNREALVERLETSOLVER_API UNiagaraRenderer : public UObject
 
 
 	void Initialise(UNiagaraSystem* pNiagaraSystem,  int32 iNumberOfParticles);
+	void Reinit(int32 iNumberOfParticles);
 
 	void UpdateParitclePositions(const TArray<FVector2D>& arrPositions);
 

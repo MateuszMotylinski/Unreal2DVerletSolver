@@ -62,9 +62,7 @@ public:
 
 	float m_fParticlesRadius;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PR_fRestitution;
-
+	UPROPERTY()
 	FParticlesData m_xParticles;
 
 	UPROPERTY()
@@ -80,7 +78,7 @@ public:
 	bool PR_bUseGravity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
-	bool PR_bBounceFromBoundary;
+		bool PR_bBounceFromBoundary;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DebugDraw")
 		bool PR_bParticlesDebugDraw;
@@ -89,12 +87,17 @@ public:
 		bool PR_bCollisionSolverDebugDraw;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
-	float PR_fMinInitialParticleVelocity = -10;
+		float PR_fMinInitialParticleVelocity = -10;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		float PR_fMaxInitialParticleVelocity = 10;
 
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
+		bool PR_bBurstSpawn = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+		FVector2D PR_vParticlesSpawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UNiagaraSystem* PR_pNiagaraSystemAsset;

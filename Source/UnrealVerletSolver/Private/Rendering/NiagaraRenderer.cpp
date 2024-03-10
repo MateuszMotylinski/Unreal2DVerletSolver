@@ -27,6 +27,21 @@ void UNiagaraRenderer::Initialise(UNiagaraSystem* pNiagaraSystem, int32 iNumberO
 	}
 }
 
+void UNiagaraRenderer::Reinit(int32 iNumberOfParticles)
+{
+	PR_pNiagaraComponent->ResetSystem();
+
+	if (iNumberOfParticles < PR_arrParticlesPositions.Num())
+	{
+		PR_arrParticlesPositions.Empty();
+	}
+
+	for (int32 i = PR_arrParticlesPositions.Num(); i < iNumberOfParticles; i++)
+	{
+		PR_arrParticlesPositions.Add(FVector2D());
+	}
+}
+
 void UNiagaraRenderer::UpdateParitclePositions(const TArray<FVector2D>& arrPositions)
 {
 	PR_pNiagaraComponent->SetIntParameter(NS_VARIABLE_PARTICLES_NUM, arrPositions.Num());
