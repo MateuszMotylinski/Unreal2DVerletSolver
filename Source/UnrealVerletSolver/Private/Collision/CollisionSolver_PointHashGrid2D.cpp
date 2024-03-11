@@ -6,9 +6,9 @@
 
 
 UCollisionSolver_PointHashGrid2D::UCollisionSolver_PointHashGrid2D()
-: spPointHashGrid2D(nullptr)
+: m_spPointHashGrid2D(nullptr)
 {
-	spPointHashGrid2D = MakeShareable<FPointHashGrid2D>(new FPointHashGrid2D);
+	m_spPointHashGrid2D = MakeShareable<FPointHashGrid2D>(new FPointHashGrid2D);
 }
 
 void UCollisionSolver_PointHashGrid2D::InitialiseCollisionSolver(FParticlesData& arrParticles)
@@ -19,7 +19,7 @@ void UCollisionSolver_PointHashGrid2D::InitialiseCollisionSolver(FParticlesData&
 	int32 iPointIndex = 0;
 	for (FVector2D vPos : arrParticles.arrPositions)
 	{
-		spPointHashGrid2D->InsertPoint(iPointIndex, FVector2f(vPos.X, vPos.Y));
+		m_spPointHashGrid2D->InsertPoint(iPointIndex, FVector2f(vPos.X, vPos.Y));
 
 		iPointIndex++;
 	}
@@ -29,29 +29,26 @@ void UCollisionSolver_PointHashGrid2D::UpdateParticleCollision(int32 iParticleIn
 {
 	const FVector2D vPos = PR_ParticlesData->arrPositions[iParticleIndex];
 	const FVector2D vPosPv = PR_ParticlesData->arrPositionsPrev[iParticleIndex];
+	float fRadius = PR_ParticlesData->arrParticlesRadius[iParticleIndex];
 
-	spPointHashGrid2D->UpdatePointUnsafe(iParticleIndex, FVector2f(vPosPv.X, vPosPv.Y), FVector2f(vPos.X, vPos.Y));
+	m_spPointHashGrid2D->UpdatePointUnsafe(iParticleIndex, FVector2f(vPosPv.X, vPosPv.Y), FVector2f(vPos.X, vPos.Y));
 
 	TArray<int32> arrIndexes;
-	spPointHashGrid2D->GetPointsInSphere(FVector2f(vPosPv.X, vPosPv.Y), PR_ParticlesData->m_fParticlesRadius * 3, arrIndexes);
+	m_spPointHashGrid2D->GetPointsInSphere(FVector2f(vPosPv.X, vPosPv.Y), fRadius * 3, arrIndexes);
 
 	for (int32 iIndex : arrIndexes)
 	{
-		CheckAndHandleCollision2(iParticleIndex, iIndex);
+		CheckAndHandleCollision(iParticleIndex, iIndex);
 	}
 }
 
 void UCollisionSolver_PointHashGrid2D::InsertsParticle(int32 iParticleIndex, const FVector2D& vParticlePosition)
 {
-	spPointHashGrid2D->InsertPoint(iParticleIndex, FVector2f(vParticlePosition.X, vParticlePosition.Y));
+	m_spPointHashGrid2D->InsertPoint(iParticleIndex, FVector2f(vParticlePosition.X, vParticlePosition.Y));
 }
 
 void UCollisionSolver_PointHashGrid2D::DebugDraw()
 {
-	spPointHashGrid2D->DebugDrawGrid(*this);
+	m_spPointHashGrid2D->DebugDrawGrid(*this);
 }
 
-TArray<int32> UCollisionSolver_PointHashGrid2D::BroadPhase(int32 iParticleIndex)
-{
-	return TArray<int32>();
-}

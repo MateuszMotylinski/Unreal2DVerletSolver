@@ -49,8 +49,6 @@ void ASolverActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	m_xParticles.m_fParticlesRadius = m_fParticlesRadius;
-
 	PR_vParticlesSpawnPoint = FVector2D(PR_fSimBoundingBoxWidth / 2, PR_fSimBoundingBoxHeight / 2);
 
 	if (PR_bBurstSpawn)
@@ -133,15 +131,13 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 		FVector2D& vCurrentPos = m_xParticles.arrPositions[i];
 		FVector2D& vPreviousPos = m_xParticles.arrPositionsPrev[i];
 		FVector2D& vAcceleration = m_xParticles.arrAccelerations[i];
-		FVector2D& vVelocity = m_xParticles.arrVelocities[i];
 
 		FVector2D vTempPosition = m_xParticles.arrPositions[i];
+		FVector2D vVelocity = vCurrentPos - vPreviousPos;
 
 		if (!PR_bFullPhysicsSimulation)
 		{
-			vVelocity = vCurrentPos - vPreviousPos;
 			vPreviousPos =  vCurrentPos - vVelocity / 1.1;
-			//vPreviousPos += vVelocity / 2;
 		}
 
 		if (!PR_bFullPhysicsSimulation)
@@ -149,14 +145,8 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 			vAcceleration = FVector2D::Zero();
 		}
 
-		//vPreviousPos = (PR_bForceNullAccelerationAndVelocity) ? vPreviousPos : vCurrentPos;
-		//vAcceleration = (!PR_bFullPhysicsSimulation) ? vAcceleration : FVector2D::Zero();
-
 		// Verlet integration
 		vCurrentPos = 2 * vCurrentPos - vPreviousPos + vAcceleration * FMath::Square(fDeltaTime);
-
-		// Set velocity (CurrentPos - PreviousPos)
-		vVelocity = vCurrentPos - vPreviousPos;
 
 		// Update previous position vector
 		vPreviousPos = vTempPosition;
@@ -210,6 +200,7 @@ void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D&
 	}
 	
 	m_xParticles.arrPositionsPrev.Add(vStartPosition);
-	m_xParticles.arrVelocities.Add(vStartVelocity);
+	m_xParticles.arrParticlesMass.Add(1.0f);
+	m_xParticles.arrParticlesRadius.Add(4.0f);
 }
 

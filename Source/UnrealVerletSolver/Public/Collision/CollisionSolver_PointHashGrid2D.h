@@ -20,11 +20,8 @@ public:
 	virtual void InitialiseCollisionSolver(FParticlesData& arrParticles) override;
 	virtual void UpdateParticleCollision(int32 iParticleIndex) override;
 	virtual void InsertsParticle(int32 iParticleIndex, const FVector2D& vParticlePosition) override;
-
 	virtual void DebugDraw() override;
 
-	// Get potential colliders for the specific particle by its index
-	TArray<int32> BroadPhase(int32 iParticleIndex);
-
-	TSharedPtr<FPointHashGrid2D> spPointHashGrid2D;
+	public:
+	TSharedPtr<FPointHashGrid2D> m_spPointHashGrid2D;
 };
