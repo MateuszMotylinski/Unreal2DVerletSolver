@@ -22,10 +22,6 @@ struct UNREALVERLETSOLVER_API FParticlesData
 	TArray<FVector2D> arrAccelerations;
 	TArray<float> arrParticlesMass;
 	TArray<float> arrParticlesRadius;
-
-	//float m_fParticlesRadius = 4.0f;
-	//float fMass = 1.0f;
-
 };
 
 UCLASS(Blueprintable)
@@ -49,6 +45,8 @@ public:
 
 	virtual void OnConstruction(const FTransform& xTransform) override;
 
+	public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float PR_fSimBoundingBoxWidth;
 
@@ -61,10 +59,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 PR_iParticlesToSpawn;
 
-	float m_fParticlesRadius;
-
 	UPROPERTY()
-	FParticlesData m_xParticles;
+	FParticlesData PR_xParticles;
 
 	UPROPERTY()
 	UCollisionSolver* PR_pCollisionSolver;

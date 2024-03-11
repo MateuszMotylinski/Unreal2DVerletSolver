@@ -18,7 +18,6 @@
 ASolverActor::ASolverActor()
 :PR_fSimBoundingBoxWidth(100.0f)
 , PR_fSimBoundingBoxHeight(100.0f)
-, m_fParticlesRadius(4.0f)
 , PR_bDrawPositions(false)
 , PR_iParticlesToSpawn(1)
 , PR_pCollisionSolver(nullptr)
@@ -62,10 +61,10 @@ void ASolverActor::BeginPlay()
 	//PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
 	PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
 
-	PR_pCollisionSolver->InitialiseCollisionSolver(m_xParticles);
+	PR_pCollisionSolver->InitialiseCollisionSolver(PR_xParticles);
 
 	PR_pRenderer->Initialise(PR_pNiagaraSystemAsset, PR_iParticlesToSpawn);
-	PR_pRenderer->UpdateParitclePositions(m_xParticles.arrPositions);
+	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
 }
 
 // Called every frame
@@ -73,13 +72,13 @@ void ASolverActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!PR_bBurstSpawn && m_xParticles.arrPositions.Num() < PR_iParticlesToSpawn)
+	if (!PR_bBurstSpawn && PR_xParticles.arrPositions.Num() < PR_iParticlesToSpawn)
 	{
 		FVector2D vRandomPosOffset = FVector2D(FMath::RandRange(-10, 10), FMath::RandRange(-10, 10));
 		AddParticle(PR_vParticlesSpawnPoint + vRandomPosOffset, FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
 
-		PR_pCollisionSolver->InsertsParticle(m_xParticles.arrPositions.Num() - 1, PR_vParticlesSpawnPoint);
-		PR_pRenderer->Reinit(m_xParticles.arrPositions.Num());
+		PR_pCollisionSolver->InsertsParticle(PR_xParticles.arrPositions.Num() - 1, PR_vParticlesSpawnPoint);
+		PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
 	}
 
 	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
@@ -96,11 +95,11 @@ void ASolverActor::Tick(float DeltaTime)
 	if (PR_bParticlesDebugDraw)
 	{
 		int32 iIndex = 0;
-		for (const FVector2D& vPos : m_xParticles.arrPositions)
+		for (const FVector2D& vPos : PR_xParticles.arrPositions)
 		{
 
 			//DrawDebugSphere(GetWorld(),FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 4, FColor::Yellow);
-			DrawDebugCircle(GetWorld(), FVector(vPos.X, 0.0f, vPos.Y), m_fParticlesRadius, 34, FColor::Yellow, false, -1.0f, 0, 0.2f
+			DrawDebugCircle(GetWorld(), FVector(vPos.X, 0.0f, vPos.Y), PR_xParticles.arrParticlesRadius[iIndex], 34, FColor::Yellow, false, -1.0f, 0, 0.2f
 				, FVector(0.0f, 0.0f, 1.0f)
 				, FVector(1.0f, 0.0f, 0.0f)
 				, false);
@@ -109,8 +108,6 @@ void ASolverActor::Tick(float DeltaTime)
 			{
 				UKismetSystemLibrary::DrawDebugString(GetWorld(), FVector(vPos.X, 0.0f, vPos.Y), vPos.ToString());
 			}
-
-
 
 			iIndex++;
 		}
@@ -121,18 +118,18 @@ void ASolverActor::Tick(float DeltaTime)
 		PR_pCollisionSolver->DebugDraw();
 	}
 
-	PR_pRenderer->UpdateParitclePositions(m_xParticles.arrPositions);
+	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
 }
 
 void ASolverActor::UpdateSolver(float fDeltaTime)
 {   
-	for (int32 i = 0; i < m_xParticles.arrPositions.Num(); i++)
+	for (int32 i = 0; i < PR_xParticles.arrPositions.Num(); i++)
 	{
-		FVector2D& vCurrentPos = m_xParticles.arrPositions[i];
-		FVector2D& vPreviousPos = m_xParticles.arrPositionsPrev[i];
-		FVector2D& vAcceleration = m_xParticles.arrAccelerations[i];
+		FVector2D& vCurrentPos = PR_xParticles.arrPositions[i];
+		FVector2D& vPreviousPos = PR_xParticles.arrPositionsPrev[i];
+		FVector2D& vAcceleration = PR_xParticles.arrAccelerations[i];
 
-		FVector2D vTempPosition = m_xParticles.arrPositions[i];
+		FVector2D vTempPosition = PR_xParticles.arrPositions[i];
 		FVector2D vVelocity = vCurrentPos - vPreviousPos;
 
 		if (!PR_bFullPhysicsSimulation)
@@ -153,11 +150,12 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 
 		PR_pCollisionSolver->UpdateParticleCollision(i);
 
+		float fParticleRadius = PR_xParticles.arrParticlesRadius[i];
 
 		// Check and correct for boundaries
-		if (vCurrentPos.X - m_fParticlesRadius < 0.0f || vCurrentPos.X + m_fParticlesRadius > PR_fSimBoundingBoxWidth)
+		if (vCurrentPos.X - fParticleRadius < 0.0f || vCurrentPos.X + fParticleRadius > PR_fSimBoundingBoxWidth)
 		{
-			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, m_fParticlesRadius, PR_fSimBoundingBoxWidth - m_fParticlesRadius);
+			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, fParticleRadius, PR_fSimBoundingBoxWidth - fParticleRadius);
 			
 			if (PR_bBounceFromBoundary)
 			{
@@ -165,9 +163,9 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 			}
 		}
 
-		if (vCurrentPos.Y - m_fParticlesRadius < 0.0f || vCurrentPos.Y + m_fParticlesRadius > PR_fSimBoundingBoxHeight)
+		if (vCurrentPos.Y - fParticleRadius < 0.0f || vCurrentPos.Y + fParticleRadius > PR_fSimBoundingBoxHeight)
 		{
-			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, m_fParticlesRadius, PR_fSimBoundingBoxHeight - m_fParticlesRadius);
+			vCurrentPos.Y = FMath::Clamp(vCurrentPos.Y, fParticleRadius, PR_fSimBoundingBoxHeight - fParticleRadius);
 
 			if (PR_bBounceFromBoundary)
 			{
@@ -187,20 +185,19 @@ void ASolverActor::OnConstruction(const FTransform& xTransform)
 
 void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D& vStartVelocity)
 {
-	m_xParticles.arrPositions.Add(vStartPosition);
+	PR_xParticles.arrPositions.Add(vStartPosition);
 
 	if (PR_bUseGravity)
 	{
-		m_xParticles.arrAccelerations.Add(FVector2D(0.0f, GRAVITY * PR_fGravityMultiplier));
+		PR_xParticles.arrAccelerations.Add(FVector2D(0.0f, GRAVITY * PR_fGravityMultiplier));
 	}
 	else
 	{
-		m_xParticles.arrAccelerations.Add(vStartVelocity);
-		//m_xParticles.arrAccelerations.Add(FVector2D::Zero());
+		PR_xParticles.arrAccelerations.Add(vStartVelocity);
 	}
 	
-	m_xParticles.arrPositionsPrev.Add(vStartPosition);
-	m_xParticles.arrParticlesMass.Add(1.0f);
-	m_xParticles.arrParticlesRadius.Add(4.0f);
+	PR_xParticles.arrPositionsPrev.Add(vStartPosition);
+	PR_xParticles.arrParticlesMass.Add(1.0f);
+	PR_xParticles.arrParticlesRadius.Add(4.0f);
 }
 
