@@ -41,6 +41,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void Restart();
 	void UpdateSolver(float fDeltaTime);
 
 	virtual void OnConstruction(const FTransform& xTransform) override;

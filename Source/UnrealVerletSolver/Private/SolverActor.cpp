@@ -121,6 +121,29 @@ void ASolverActor::Tick(float DeltaTime)
 	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
 }
 
+void ASolverActor::Restart()
+{
+	PR_xParticles = FParticlesData();
+
+	PR_vParticlesSpawnPoint = FVector2D(PR_fSimBoundingBoxWidth / 2, PR_fSimBoundingBoxHeight / 2);
+
+	if (PR_bBurstSpawn)
+	{
+		for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
+		{
+			AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
+		}
+	}
+
+	//PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
+	PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
+
+	PR_pCollisionSolver->InitialiseCollisionSolver(PR_xParticles);
+
+	PR_pRenderer->Initialise(PR_pNiagaraSystemAsset, PR_iParticlesToSpawn);
+	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
+}
+
 void ASolverActor::UpdateSolver(float fDeltaTime)
 {   
 	for (int32 i = 0; i < PR_xParticles.arrPositions.Num(); i++)
