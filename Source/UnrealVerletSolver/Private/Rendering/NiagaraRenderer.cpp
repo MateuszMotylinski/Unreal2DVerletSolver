@@ -30,6 +30,8 @@ void UNiagaraRenderer::Initialise(UNiagaraSystem* pNiagaraSystem, int32 iNumberO
 void UNiagaraRenderer::Reinit(int32 iNumberOfParticles)
 {
 	PR_pNiagaraComponent->ResetSystem();
+	PR_pNiagaraComponent->Deactivate();
+	PR_pNiagaraComponent->DestroyInstanceNotComponent();
 	PR_pNiagaraComponent->ActivateSystem(true);
 
 	if (iNumberOfParticles < PR_arrParticlesPositions.Num())

@@ -140,7 +140,8 @@ void ASolverActor::Restart()
 
 	PR_pCollisionSolver->InitialiseCollisionSolver(PR_xParticles);
 
-	PR_pRenderer->Initialise(PR_pNiagaraSystemAsset, PR_iParticlesToSpawn);
+	//PR_pRenderer = NewObject<UNiagaraRenderer>();
+	PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
 	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
 }
 
