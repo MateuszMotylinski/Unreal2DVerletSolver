@@ -43,6 +43,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Restart();
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetParticlesNum() const { return PR_xParticles.arrPositions.Num(); }
+
 	void UpdateSolver(float fDeltaTime);
 
 	virtual void OnConstruction(const FTransform& xTransform) override;
