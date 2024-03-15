@@ -102,7 +102,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
 		bool PR_bBurstSpawn;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "!PR_bBurstSpawn", EditConditionHides))
+		int32 PR_iParticlesToSpawnPerFrame;
+	
+	UPROPERTY()
 		FVector2D PR_vParticlesSpawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

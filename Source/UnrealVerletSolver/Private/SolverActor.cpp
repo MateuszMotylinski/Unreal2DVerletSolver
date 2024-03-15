@@ -31,6 +31,7 @@ ASolverActor::ASolverActor()
 , PR_fMaxInitialParticleVelocity(1.0f)
 , PR_fGravityMultiplier(1.0f)
 , PR_bBurstSpawn(true)
+, PR_iParticlesToSpawnPerFrame(1)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -74,11 +75,14 @@ void ASolverActor::Tick(float DeltaTime)
 
 	if (!PR_bBurstSpawn && PR_xParticles.arrPositions.Num() < PR_iParticlesToSpawn)
 	{
-		FVector2D vRandomPosOffset = FVector2D(FMath::RandRange(-10, 10), FMath::RandRange(-10, 10));
-		AddParticle(PR_vParticlesSpawnPoint + vRandomPosOffset, FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
+		for (int32 i = 0; i < PR_iParticlesToSpawnPerFrame; i++)
+		{
+			FVector2D vRandomPosOffset = FVector2D(FMath::RandRange(-10, 10), FMath::RandRange(-10, 10));
+			AddParticle(PR_vParticlesSpawnPoint + vRandomPosOffset, FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
 
-		PR_pCollisionSolver->InsertsParticle(PR_xParticles.arrPositions.Num() - 1, PR_vParticlesSpawnPoint);
-		PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
+			PR_pCollisionSolver->InsertsParticle(PR_xParticles.arrPositions.Num() - 1, PR_vParticlesSpawnPoint);
+			PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
+		}
 	}
 
 	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
