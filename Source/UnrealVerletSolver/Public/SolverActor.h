@@ -11,11 +11,11 @@ class UCollisionSolver;
 class UNiagaraRenderer;
 class UNiagaraSystem;
 
-UENUM(Blueprintable)
+UENUM(BlueprintType)
 enum class ECollisionSolverType : uint8
 {
 	NAIVE,
-	POINT_HASH_GRID_2D
+	HASH_GRID
 };
 
 USTRUCT(Blueprintable)

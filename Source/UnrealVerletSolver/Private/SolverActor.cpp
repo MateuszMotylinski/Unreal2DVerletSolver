@@ -32,7 +32,7 @@ ASolverActor::ASolverActor()
 , PR_fGravityMultiplier(1.0f)
 , PR_bBurstSpawn(true)
 , PR_iParticlesToSpawnPerFrame(1)
-, PR_eCollisionSolverType(ECollisionSolverType::POINT_HASH_GRID_2D)
+, PR_eCollisionSolverType(ECollisionSolverType::HASH_GRID)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -71,7 +71,20 @@ void ASolverActor::InitialiseParticles()
 
 void ASolverActor::InitialiseCollisionSolver()
 {
-	PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
+
+	switch (PR_eCollisionSolverType)
+	{
+		case ECollisionSolverType::NAIVE:
+		{
+			PR_pCollisionSolver = NewObject<UCollisionSolver_Naive>(this);
+		}
+		break;
+		case ECollisionSolverType::HASH_GRID:
+		{
+			PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
+		}
+		break;
+	}
 
 	PR_pCollisionSolver->InitialiseCollisionSolver(PR_xParticles);
 }
