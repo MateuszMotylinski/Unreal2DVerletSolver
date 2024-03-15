@@ -11,6 +11,13 @@ class UCollisionSolver;
 class UNiagaraRenderer;
 class UNiagaraSystem;
 
+UENUM(Blueprintable)
+enum class ECollisionSolverType : uint8
+{
+	NAIVE,
+	POINT_HASH_GRID_2D
+};
+
 USTRUCT(Blueprintable)
 struct UNREALVERLETSOLVER_API FParticlesData
 {
@@ -36,6 +43,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void InitialiseParticles();
+	void InitialiseCollisionSolver();
+	void InitialiseRenderer();
 
 public:	
 	// Called every frame
@@ -105,6 +116,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "!PR_bBurstSpawn", EditConditionHides))
 		int32 PR_iParticlesToSpawnPerFrame;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+	ECollisionSolverType PR_eCollisionSolverType;
+
 	UPROPERTY()
 		FVector2D PR_vParticlesSpawnPoint;
 

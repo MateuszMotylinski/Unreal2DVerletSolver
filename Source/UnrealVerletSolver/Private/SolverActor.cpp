@@ -32,6 +32,7 @@ ASolverActor::ASolverActor()
 , PR_fGravityMultiplier(1.0f)
 , PR_bBurstSpawn(true)
 , PR_iParticlesToSpawnPerFrame(1)
+, PR_eCollisionSolverType(ECollisionSolverType::POINT_HASH_GRID_2D)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -49,6 +50,14 @@ void ASolverActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitialiseParticles();
+	InitialiseCollisionSolver();
+	InitialiseRenderer();
+}
+
+void ASolverActor::InitialiseParticles()
+{
+	PR_xParticles = FParticlesData();
 	PR_vParticlesSpawnPoint = FVector2D(PR_fSimBoundingBoxWidth / 2, PR_fSimBoundingBoxHeight / 2);
 
 	if (PR_bBurstSpawn)
@@ -58,12 +67,17 @@ void ASolverActor::BeginPlay()
 			AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
 		}
 	}
+}
 
-	//PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
+void ASolverActor::InitialiseCollisionSolver()
+{
 	PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
 
 	PR_pCollisionSolver->InitialiseCollisionSolver(PR_xParticles);
+}
 
+void ASolverActor::InitialiseRenderer()
+{
 	PR_pRenderer->Initialise(PR_pNiagaraSystemAsset, PR_iParticlesToSpawn);
 	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
 }
@@ -127,22 +141,8 @@ void ASolverActor::Tick(float DeltaTime)
 
 void ASolverActor::Restart()
 {
-	PR_xParticles = FParticlesData();
-
-	PR_vParticlesSpawnPoint = FVector2D(PR_fSimBoundingBoxWidth / 2, PR_fSimBoundingBoxHeight / 2);
-
-	if (PR_bBurstSpawn)
-	{
-		for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
-		{
-			AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
-		}
-	}
-
-	//PR_CollisionSolver = NewObject<UCollisionSolver_Naive>(this);
-	PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
-
-	PR_pCollisionSolver->InitialiseCollisionSolver(PR_xParticles);
+	InitialiseParticles();
+	InitialiseCollisionSolver();
 
 	//PR_pRenderer = NewObject<UNiagaraRenderer>();
 	PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
