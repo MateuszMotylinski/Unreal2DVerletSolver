@@ -48,6 +48,9 @@ protected:
 	void InitialiseCollisionSolver();
 	void InitialiseRenderer();
 
+	void AddPerFrameParticles();
+	void DebugDraw();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

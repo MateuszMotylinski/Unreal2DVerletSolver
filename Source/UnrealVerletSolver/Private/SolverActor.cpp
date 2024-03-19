@@ -37,7 +37,6 @@ ASolverActor::ASolverActor()
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//PrimaryActorTick.TickInterval = 0.1f;
 
 	if (!GEngine)
 	{
@@ -71,7 +70,6 @@ void ASolverActor::InitialiseParticles()
 
 void ASolverActor::InitialiseCollisionSolver()
 {
-
 	switch (PR_eCollisionSolverType)
 	{
 		case ECollisionSolverType::NAIVE:
@@ -95,11 +93,8 @@ void ASolverActor::InitialiseRenderer()
 	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
 }
 
-// Called every frame
-void ASolverActor::Tick(float DeltaTime)
+void ASolverActor::AddPerFrameParticles()
 {
-	Super::Tick(DeltaTime);
-
 	if (!PR_bBurstSpawn && PR_xParticles.arrPositions.Num() < PR_iParticlesToSpawn)
 	{
 		for (int32 i = 0; i < PR_iParticlesToSpawnPerFrame; i++)
@@ -111,18 +106,14 @@ void ASolverActor::Tick(float DeltaTime)
 			PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
 		}
 	}
+}
 
+void ASolverActor::DebugDraw()
+{
+	// Sim Bounds Debug Draw
 	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
 
-	//UpdateSolver(0.001f);
-	
-	const float fSubDT = DeltaTime / static_cast<float>(PR_iSubsteps);
-
-	for (int32 iSubstep = 0; iSubstep < PR_iSubsteps; iSubstep++)
-	{
-		UpdateSolver(fSubDT);
-	}
-
+	// Particles Debug Draw
 	if (PR_bParticlesDebugDraw)
 	{
 		int32 iIndex = 0;
@@ -144,12 +135,31 @@ void ASolverActor::Tick(float DeltaTime)
 		}
 	}
 
+	// Collision Debug Draw
 	if (PR_bCollisionSolverDebugDraw)
 	{
 		PR_pCollisionSolver->DebugDraw();
 	}
+}
 
+// Called every frame
+void ASolverActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	AddPerFrameParticles();
+
+	const float fSubDT = DeltaTime / static_cast<float>(PR_iSubsteps);
+
+	for (int32 iSubstep = 0; iSubstep < PR_iSubsteps; iSubstep++)
+	{
+		UpdateSolver(fSubDT);
+	}
+
+	// Update Niagara Renderer
 	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
+
+	DebugDraw();
 }
 
 void ASolverActor::Restart()
@@ -236,7 +246,6 @@ void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D&
 	{
 		PR_xParticles.arrAccelerations.Add(vStartVelocity);
 	}
-	
 	PR_xParticles.arrPositionsPrev.Add(vStartPosition);
 	PR_xParticles.arrParticlesMass.Add(1.0f);
 	PR_xParticles.arrParticlesRadius.Add(4.0f);

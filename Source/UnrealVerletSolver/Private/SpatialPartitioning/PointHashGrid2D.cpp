@@ -146,13 +146,10 @@ void FPointHashGrid2D::DebugDrawGrid(UObject& WorldObject)
 
 	for (auto& Position : tPositions)
 	{
-		FVector2f tGridPosition = Indexer.FromGrid(Position);
+		FVector2f vGridPosition = Indexer.FromGrid(Position);
+		FVector2f vPosition = vGridPosition;
+		FVector vExtent(Indexer.CellSize * 2, 0, Indexer.CellSize * 2);
 
-		//FVector2i idx = Indexer.ToGrid(FVector2f(Position.X, Position.Y));
-
-		FVector2f position = tGridPosition;
-		FVector extent(Indexer.CellSize * 2, 0, Indexer.CellSize * 2);
-
-		UKismetSystemLibrary::DrawDebugBox(&WorldObject, FVector(position.X, 0.0f, position.Y), extent, FLinearColor::Red);
+		UKismetSystemLibrary::DrawDebugBox(&WorldObject, FVector(vPosition.X, 0.0f, vPosition.Y), vExtent, FLinearColor::Red);
 	}
 }

@@ -18,7 +18,6 @@ UNiagaraRenderer::UNiagaraRenderer()
 
 void UNiagaraRenderer::Initialise(UNiagaraSystem* pNiagaraSystem, int32 iNumberOfParticles)
 {
-
 	PR_pNiagaraComponent->SetAsset(pNiagaraSystem);
 
 	for (int32 i = 0; i < iNumberOfParticles; i++)
