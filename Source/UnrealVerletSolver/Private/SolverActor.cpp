@@ -33,7 +33,7 @@ ASolverActor::ASolverActor()
 , PR_bBurstSpawn(true)
 , PR_iParticlesToSpawnPerFrame(1)
 , PR_bRandomParticleRadius(false)
-, PR_fParticleRadius(4.0f)
+, PR_fParticleRadius(10.0f)
 , PR_eCollisionSolverType(ECollisionSolverType::HASH_GRID)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
