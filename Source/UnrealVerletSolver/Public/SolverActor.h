@@ -67,16 +67,16 @@ public:
 
 	public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "SimBoundingBoxWidth")
 	float PR_fSimBoundingBoxWidth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "SimBoundingBoxHeight")
 	float PR_fSimBoundingBoxHeight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "DrawPositions")
 	bool PR_bDrawPositions;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "ParticlesToSpawn")
 	int32 PR_iParticlesToSpawn;
 
 	UPROPERTY()
@@ -85,47 +85,46 @@ public:
 	UPROPERTY()
 	UCollisionSolver* PR_pCollisionSolver;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "FullPhysicsSimulation")
 	bool PR_bFullPhysicsSimulation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Substeps", Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 	 int32 PR_iSubsteps;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "UseGravit", Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 	bool PR_bUseGravity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "BounceFromBoundary", Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		bool PR_bBounceFromBoundary;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "MinInitialParticleVelocity", Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		float PR_fMinInitialParticleVelocity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "MaxInitialParticleVelocity", Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		float PR_fMaxInitialParticleVelocity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "GravityMultiplier", Category = "PhysicsSim", meta = (EditCondition = "PR_bFullPhysicsSimulation", EditConditionHides))
 		float PR_fGravityMultiplier;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DebugDraw")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "ParticlesDebugDraw", Category = "DebugDraw")
 		bool PR_bParticlesDebugDraw;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DebugDraw")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "CollisionSolverDebugDraw", Category = "DebugDraw")
 		bool PR_bCollisionSolverDebugDraw;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "BurstSpawn", Category = "ParticlesSpawn")
 		bool PR_bBurstSpawn;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "!PR_bBurstSpawn", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "ParticlesToSpawnPerFrame", Category = "ParticlesSpawn", meta = (EditCondition = "!PR_bBurstSpawn", EditConditionHides))
 		int32 PR_iParticlesToSpawnPerFrame;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "RandomParticleRadius", Category = "ParticlesSpawn")
 		bool PR_bRandomParticleRadius;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (ClampMin = 1, ClampMax = 10, EditCondition = "!PR_bRandomParticleRadius", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "ParticleRadius", Category = "ParticlesSpawn", meta = (ClampMin = 1, ClampMax = 10, EditCondition = "!PR_bRandomParticleRadius", EditConditionHides))
 		float PR_fParticleRadius;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "CollisionSolverType", Category = "Collision")
 	ECollisionSolverType PR_eCollisionSolverType;
 
 
