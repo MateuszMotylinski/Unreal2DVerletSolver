@@ -122,7 +122,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
 		bool PR_bRandomParticleRadius;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "!PR_bRandomParticleRadius", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (ClampMin = 1, ClampMax = 10, EditCondition = "!PR_bRandomParticleRadius", EditConditionHides))
 		float PR_fParticleRadius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
