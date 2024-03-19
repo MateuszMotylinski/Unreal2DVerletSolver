@@ -32,6 +32,8 @@ ASolverActor::ASolverActor()
 , PR_fGravityMultiplier(1.0f)
 , PR_bBurstSpawn(true)
 , PR_iParticlesToSpawnPerFrame(1)
+, PR_bRandomParticleRadius(false)
+, PR_fParticleRadius(4.0f)
 , PR_eCollisionSolverType(ECollisionSolverType::HASH_GRID)
 {
 	PR_pRenderer = CreateDefaultSubobject<UNiagaraRenderer>("NiagaraRenderer");
@@ -248,6 +250,14 @@ void ASolverActor::AddParticle(const FVector2D& vStartPosition, const FVector2D&
 	}
 	PR_xParticles.arrPositionsPrev.Add(vStartPosition);
 	PR_xParticles.arrParticlesMass.Add(1.0f);
-	PR_xParticles.arrParticlesRadius.Add(4.0f);
+
+	if (PR_bRandomParticleRadius)
+	{
+		PR_xParticles.arrParticlesRadius.Add(FMath::RandRange(1.0f, 10.0f));
+	}
+	else
+	{
+		PR_xParticles.arrParticlesRadius.Add(PR_fParticleRadius);
+	}
 }
 

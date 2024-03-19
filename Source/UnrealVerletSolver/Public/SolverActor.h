@@ -118,9 +118,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "!PR_bBurstSpawn", EditConditionHides))
 		int32 PR_iParticlesToSpawnPerFrame;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn")
+		bool PR_bRandomParticleRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticlesSpawn", meta = (EditCondition = "!PR_bRandomParticleRadius", EditConditionHides))
+		float PR_fParticleRadius;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	ECollisionSolverType PR_eCollisionSolverType;
+
 
 	UPROPERTY()
 		FVector2D PR_vParticlesSpawnPoint;
