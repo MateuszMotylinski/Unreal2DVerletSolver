@@ -91,8 +91,7 @@ void ASolverActor::InitialiseCollisionSolver()
 
 void ASolverActor::InitialiseRenderer()
 {
-	PR_pRenderer->Initialise(PR_pNiagaraSystemAsset, PR_iParticlesToSpawn);
-	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
+	PR_pRenderer->Initialise(PR_pNiagaraSystemAsset, PR_xParticles);
 }
 
 void ASolverActor::AddPerFrameParticles()
@@ -105,7 +104,7 @@ void ASolverActor::AddPerFrameParticles()
 			AddParticle(PR_vParticlesSpawnPoint + vRandomPosOffset, FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
 
 			PR_pCollisionSolver->InsertsParticle(PR_xParticles.arrPositions.Num() - 1, PR_vParticlesSpawnPoint);
-			PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
+			PR_pRenderer->Reinit(PR_xParticles);
 		}
 	}
 }
@@ -159,7 +158,7 @@ void ASolverActor::Tick(float DeltaTime)
 	}
 
 	// Update Niagara Renderer
-	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
+	PR_pRenderer->UpdateParticlePositions(PR_xParticles.arrPositions);
 
 	DebugDraw();
 }
@@ -170,8 +169,8 @@ void ASolverActor::Restart()
 	InitialiseCollisionSolver();
 
 	//PR_pRenderer = NewObject<UNiagaraRenderer>();
-	PR_pRenderer->Reinit(PR_xParticles.arrPositions.Num());
-	PR_pRenderer->UpdateParitclePositions(PR_xParticles.arrPositions);
+	PR_pRenderer->Reinit(PR_xParticles);
+	PR_pRenderer->UpdateParticlePositions(PR_xParticles.arrPositions);
 }
 
 void ASolverActor::UpdateSolver(float fDeltaTime)

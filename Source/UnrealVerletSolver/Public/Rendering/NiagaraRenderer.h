@@ -10,6 +10,7 @@
 
 class UNiagaraComponent;
 class UNiagaraSystem;
+struct FParticlesData;
 /**
  * 
  */
@@ -22,10 +23,11 @@ class UNREALVERLETSOLVER_API UNiagaraRenderer : public UObject
 	UNiagaraRenderer();
 
 
-	void Initialise(UNiagaraSystem* pNiagaraSystem,  int32 iNumberOfParticles);
-	void Reinit(int32 iNumberOfParticles);
+	void Initialise(UNiagaraSystem* pNiagaraSystem, const FParticlesData& xParticlesData);
+	void Reinit(const FParticlesData& xParticlesData);
 
-	void UpdateParitclePositions(const TArray<FVector2D>& arrPositions);
+	void UpdateParticlePositions(const TArray<FVector2D>& arrPositions);
+	void UpdateParticleRadius(const TArray<float>& arrRadiusFloats);
 
 protected:
 	UPROPERTY()
