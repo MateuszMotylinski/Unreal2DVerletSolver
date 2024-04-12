@@ -14,7 +14,7 @@ void UCollisionSolver_LightGrid::InitialiseCollisionSolver(FParticlesData& arrPa
 	Super::InitialiseCollisionSolver(arrParticles);
 
 	//m_xGrid.clear();
-	m_xGrid.init(900, 900, 2);
+	//m_xGrid.init(900, 900, 2);
 
 	//m_xGrid.reserve(1000);
 

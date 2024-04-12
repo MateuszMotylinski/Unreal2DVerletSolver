@@ -5,12 +5,15 @@
 
 #include "Collision/CollisionSolver_Naive.h"
 #include "Collision/CollisionSolver_PointHashGrid2D.h"
+#include "Collision/CollisionSolver_LightGrid.h"
+
 #include "Rendering/NiagaraRenderer.h"
 
 #include "NiagaraSystem.h"
 
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Algo/MinElement.h"
 
 #define GRAVITY -9.8      // Gravitational acceleration in the y-direction (m/s^2)
 
@@ -66,6 +69,8 @@ void ASolverActor::InitialiseParticles()
 		for (int32 i = 0; i < PR_iParticlesToSpawn; i++)
 		{
 			AddParticle(FVector2D(FMath::RandRange(0.0f, PR_fSimBoundingBoxWidth), FMath::RandRange(0.0f, PR_fSimBoundingBoxHeight)), FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
+
+			//AddParticle(FVector2D(FMath::RandRange(200.0f, PR_fSimBoundingBoxWidth - 200), FMath::RandRange(200.0f, PR_fSimBoundingBoxHeight - 200)), FVector2D(FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity), FMath::RandRange(PR_fMinInitialParticleVelocity, PR_fMaxInitialParticleVelocity)));
 		}
 	}
 }
@@ -82,6 +87,23 @@ void ASolverActor::InitialiseCollisionSolver()
 		case ECollisionSolverType::HASH_GRID:
 		{
 			PR_pCollisionSolver = NewObject<UCollisionSolver_PointHashGrid2D>(this);
+		}
+		break;
+		case ECollisionSolverType::LIGHTGRID:
+		{
+			PR_pCollisionSolver = NewObject<UCollisionSolver_LightGrid>(this);
+
+			UCollisionSolver_LightGrid* pGrid = Cast<UCollisionSolver_LightGrid>(PR_pCollisionSolver);
+
+			float* pfRadiusMin = Algo::MinElement(PR_xParticles.arrParticlesRadius);
+
+			if (!pfRadiusMin)
+			{
+				ensure(0);
+				return;
+			}
+
+			pGrid->m_xGrid.init(PR_fSimBoundingBoxWidth, PR_fSimBoundingBoxHeight, *pfRadiusMin);
 		}
 		break;
 	}

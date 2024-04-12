@@ -15,7 +15,8 @@ UENUM(BlueprintType)
 enum class ECollisionSolverType : uint8
 {
 	NAIVE,
-	HASH_GRID
+	HASH_GRID,
+	LIGHTGRID
 };
 
 USTRUCT(Blueprintable)
