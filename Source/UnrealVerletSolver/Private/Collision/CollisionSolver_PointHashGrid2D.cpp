@@ -27,18 +27,29 @@ void UCollisionSolver_PointHashGrid2D::InitialiseCollisionSolver(FParticlesData&
 
 void UCollisionSolver_PointHashGrid2D::UpdateParticleCollision(int32 iParticleIndex)
 {
+	SCOPE_CYCLE_COUNTER(STAT_CollisionResolution);
+
 	const FVector2D vPos = PR_ParticlesData->arrPositions[iParticleIndex];
 	const FVector2D vPosPv = PR_ParticlesData->arrPositionsPrev[iParticleIndex];
 	float fRadius = PR_ParticlesData->arrParticlesRadius[iParticleIndex];
 
-	m_spPointHashGrid2D->UpdatePointUnsafe(iParticleIndex, FVector2f(vPosPv.X, vPosPv.Y), FVector2f(vPos.X, vPos.Y));
+	{
+		SCOPE_CYCLE_COUNTER(STAT_Collision_UpdateParticlePosition);
+		m_spPointHashGrid2D->UpdatePointUnsafe(iParticleIndex, FVector2f(vPosPv.X, vPosPv.Y), FVector2f(vPos.X, vPos.Y));
+	}
 
 	TArray<int32> arrIndexes;
-	m_spPointHashGrid2D->GetPointsInSphere(FVector2f(vPosPv.X, vPosPv.Y), fRadius * 3, arrIndexes);
-
-	for (int32 iIndex : arrIndexes)
 	{
-		CheckAndHandleCollision(iParticleIndex, iIndex);
+		SCOPE_CYCLE_COUNTER(STAT_Collision_FindNeighbours);
+		m_spPointHashGrid2D->GetPointsInSphere(FVector2f(vPosPv.X, vPosPv.Y), fRadius * 2, arrIndexes);
+	}
+
+	{
+		SCOPE_CYCLE_COUNTER(STAT_Collision_ResolveCollisions);
+		for (int32 iIndex : arrIndexes)
+		{
+			CheckAndHandleCollision(iParticleIndex, iIndex);
+		}
 	}
 }
 

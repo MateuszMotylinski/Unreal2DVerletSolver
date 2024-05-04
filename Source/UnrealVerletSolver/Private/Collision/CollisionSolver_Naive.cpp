@@ -10,6 +10,8 @@ UCollisionSolver_Naive::UCollisionSolver_Naive()
 
 void UCollisionSolver_Naive::UpdateParticleCollision(int32 iParticleIndex)
 {
+	SCOPE_CYCLE_COUNTER(STAT_CollisionResolution);
+
 	int32 iIndex = 0;
 	for (const FVector2D& vOtherPos : PR_ParticlesData->arrPositions)
 	{

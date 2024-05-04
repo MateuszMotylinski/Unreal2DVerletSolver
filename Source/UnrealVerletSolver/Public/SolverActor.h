@@ -2,10 +2,13 @@
 
 #pragma once
 
+#include "Stats/StatDeclarations.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "SolverActor.generated.h"
+
+DECLARE_CYCLE_STAT(TEXT("SimUpdate_Total"), STAT_SimUpdate_Total, STATGROUP_UnrealVerletSolver);
 
 class UCollisionSolver;
 class UNiagaraRenderer;
@@ -23,7 +26,7 @@ USTRUCT(Blueprintable)
 struct UNREALVERLETSOLVER_API FParticlesData
 {
 	GENERATED_BODY()
-	
+
 	public:
 	TArray<FVector2D> arrPositions;
 	TArray<FVector2D> arrPositionsPrev;
@@ -36,8 +39,8 @@ UCLASS(Blueprintable)
 class UNREALVERLETSOLVER_API ASolverActor : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ASolverActor();
 
@@ -52,7 +55,7 @@ protected:
 	void AddPerFrameParticles();
 	void DebugDraw();
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

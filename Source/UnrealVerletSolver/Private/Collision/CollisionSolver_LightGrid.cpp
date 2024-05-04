@@ -39,6 +39,8 @@ void UCollisionSolver_LightGrid::InitialiseCollisionSolver(FParticlesData& arrPa
 
 void UCollisionSolver_LightGrid::UpdateParticleCollision(int32 iParticleIndex)
 {
+	SCOPE_CYCLE_COUNTER(STAT_CollisionResolution);
+
 	const FVector2D vPos = PR_ParticlesData->arrPositions[iParticleIndex];
 	const FVector2D vPosPv = PR_ParticlesData->arrPositionsPrev[iParticleIndex];
 	float fRadius = PR_ParticlesData->arrParticlesRadius[iParticleIndex];
@@ -78,7 +80,11 @@ void UCollisionSolver_LightGrid::UpdateParticleCollision(int32 iParticleIndex)
 	{
 		m_xGrid.update(iParticleIndex, xBoundsOld, xBoundsNew);
 	}*/
-	m_xGrid.update(iNode, xBoundsOld, xBoundsNew);
+
+	{
+		SCOPE_CYCLE_COUNTER(STAT_Collision_UpdateParticlePosition);
+		m_xGrid.update(iNode, xBoundsOld, xBoundsNew);
+	}
 
 	lightgrid::bounds xBoundsQuery;
 	xBoundsQuery.x = vPos.X - fRadius;
@@ -87,11 +93,18 @@ void UCollisionSolver_LightGrid::UpdateParticleCollision(int32 iParticleIndex)
 	xBoundsQuery.h = fRadius * 2;
 
 	std::vector<int32> arrIndexes;
-	m_xGrid.query(xBoundsQuery, arrIndexes);
 
-	for (int32 iIndex : arrIndexes)
 	{
-		CheckAndHandleCollision(iParticleIndex, iIndex);
+		SCOPE_CYCLE_COUNTER(STAT_Collision_FindNeighbours);
+		m_xGrid.query(xBoundsQuery, arrIndexes);
+	}
+
+	{
+		SCOPE_CYCLE_COUNTER(STAT_Collision_ResolveCollisions);
+		for (int32 iIndex : arrIndexes)
+		{
+			CheckAndHandleCollision(iParticleIndex, iIndex);
+		}
 	}
 }
 

@@ -2,17 +2,20 @@
 
 #pragma once
 
-
+#include "Stats/StatDeclarations.h"
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "NiagaraRenderer.generated.h"
 
+
+DECLARE_CYCLE_STAT(TEXT("RendererUpdate"), STAT_RendererUpdate, STATGROUP_UnrealVerletSolver);
+
 class UNiagaraComponent;
 class UNiagaraSystem;
 struct FParticlesData;
 /**
- * 
+ *
  */
 UCLASS()
 class UNREALVERLETSOLVER_API UNiagaraRenderer : public UObject

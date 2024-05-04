@@ -170,6 +170,8 @@ void ASolverActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	SCOPE_CYCLE_COUNTER(STAT_SimUpdate_Total);
+
 	AddPerFrameParticles();
 
 	const float fSubDT = DeltaTime / static_cast<float>(PR_iSubsteps);
@@ -196,7 +198,7 @@ void ASolverActor::Restart()
 }
 
 void ASolverActor::UpdateSolver(float fDeltaTime)
-{   
+{
 	for (int32 i = 0; i < PR_xParticles.arrPositions.Num(); i++)
 	{
 		FVector2D& vCurrentPos = PR_xParticles.arrPositions[i];
@@ -224,13 +226,14 @@ void ASolverActor::UpdateSolver(float fDeltaTime)
 
 		PR_pCollisionSolver->UpdateParticleCollision(i);
 
+
 		float fParticleRadius = PR_xParticles.arrParticlesRadius[i];
 
 		// Check and correct for boundaries
 		if (vCurrentPos.X - fParticleRadius < 0.0f || vCurrentPos.X + fParticleRadius > PR_fSimBoundingBoxWidth)
 		{
 			vCurrentPos.X = FMath::Clamp(vCurrentPos.X, fParticleRadius, PR_fSimBoundingBoxWidth - fParticleRadius);
-			
+
 			if (PR_bBounceFromBoundary)
 			{
 				vCurrentPos.X -= vVelocity.X / 2;

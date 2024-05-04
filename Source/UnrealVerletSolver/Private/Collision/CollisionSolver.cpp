@@ -5,6 +5,7 @@
 
 bool UCollisionSolver::IsColliding_CircleCircle(int32 iParticleIndex1, int32 iParticleIndex2)
 {
+
 	FVector2D& vP1 = PR_ParticlesData->arrPositions[iParticleIndex1];
 	FVector2D& vP2 = PR_ParticlesData->arrPositions[iParticleIndex2];
 
@@ -18,10 +19,16 @@ bool UCollisionSolver::IsColliding_CircleCircle(int32 iParticleIndex1, int32 iPa
 
 void UCollisionSolver::CheckAndHandleCollision(int32 iParticleIndex1, int32 iParticleIndex2)
 {
+	//SCOPE_CYCLE_COUNTER(STAT_CollisionResolution);
+
+	//DECLARE_SCOPE_CYCLE_COUNTER(TEXT("CollisionResolution"), STAT_StatsCollisionResolution, STATGROUP_CollisionSolver);
+
 	if (iParticleIndex1 == iParticleIndex2)
 	{
 		return;
 	}
+
+
 
 	FVector2D& vP1 = PR_ParticlesData->arrPositions[iParticleIndex1];
 	FVector2D& vP2 = PR_ParticlesData->arrPositions[iParticleIndex2];

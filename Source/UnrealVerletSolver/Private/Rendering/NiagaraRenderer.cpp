@@ -40,6 +40,8 @@ void UNiagaraRenderer::Reinit(const FParticlesData& xParticlesData)
 
 void UNiagaraRenderer::UpdateParticlePositions(const TArray<FVector2D>& arrPositions)
 {
+	SCOPE_CYCLE_COUNTER(STAT_RendererUpdate);
+
 	PR_pNiagaraComponent->SetIntParameter(NS_VARIABLE_PARTICLES_NUM, arrPositions.Num());
 	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector2D(PR_pNiagaraComponent, NS_VARIABLE_PARTICLES_POSITIONS, arrPositions);
 }
