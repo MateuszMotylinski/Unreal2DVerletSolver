@@ -10,6 +10,7 @@
 #include "Rendering/NiagaraRenderer.h"
 
 #include "NiagaraSystem.h"
+#include "Components/LineBatchComponent.h"
 
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -133,8 +134,75 @@ void ASolverActor::AddPerFrameParticles()
 
 void ASolverActor::DebugDraw()
 {
+
+	ULineBatchComponent* pLineBatcher = GetWorld()->LineBatcher;
+
+	// Sim Bounds Debug Draw (all builds)
+	if (pLineBatcher)
+	{
+		FVector vCenter = FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2);
+		FVector vExtent = FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2);
+		FQuat qRotation = GetActorRotation().Quaternion();
+		FColor vColor = FColor::Blue;
+		float fLifeTime = 0.0f;
+		float fThickness = 2.0f;
+
+		TArray<FBatchedLine> arrLines;
+
+		FTransform const Transform(qRotation);
+		FVector Start = Transform.TransformPosition(FVector(vExtent.X, vExtent.Y, vExtent.Z));
+		FVector End = Transform.TransformPosition(FVector(vExtent.X, -vExtent.Y, vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(vExtent.X, -vExtent.Y, vExtent.Z));
+		End = Transform.TransformPosition(FVector(-vExtent.X, -vExtent.Y, vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(-vExtent.X, -vExtent.Y, vExtent.Z));
+		End = Transform.TransformPosition(FVector(-vExtent.X, vExtent.Y, vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(-vExtent.X, vExtent.Y, vExtent.Z));
+		End = Transform.TransformPosition(FVector(vExtent.X, vExtent.Y, vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(vExtent.X, vExtent.Y, -vExtent.Z));
+		End = Transform.TransformPosition(FVector(vExtent.X, -vExtent.Y, -vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(vExtent.X, -vExtent.Y, -vExtent.Z));
+		End = Transform.TransformPosition(FVector(-vExtent.X, -vExtent.Y, -vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(-vExtent.X, -vExtent.Y, -vExtent.Z));
+		End = Transform.TransformPosition(FVector(-vExtent.X, vExtent.Y, -vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(-vExtent.X, vExtent.Y, -vExtent.Z));
+		End = Transform.TransformPosition(FVector(vExtent.X, vExtent.Y, -vExtent.Z));
+		new(arrLines)FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(vExtent.X, vExtent.Y, vExtent.Z));
+		End = Transform.TransformPosition(FVector(vExtent.X, vExtent.Y, -vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(vExtent.X, -vExtent.Y, vExtent.Z));
+		End = Transform.TransformPosition(FVector(vExtent.X, -vExtent.Y, -vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(-vExtent.X, -vExtent.Y, vExtent.Z));
+		End = Transform.TransformPosition(FVector(-vExtent.X, -vExtent.Y, -vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		Start = Transform.TransformPosition(FVector(-vExtent.X, vExtent.Y, vExtent.Z));
+		End = Transform.TransformPosition(FVector(-vExtent.X, vExtent.Y, -vExtent.Z));
+		new(arrLines) FBatchedLine(vCenter + Start, vCenter + End, vColor, fLifeTime, fThickness, 0);
+
+		pLineBatcher->DrawLines(arrLines);
+	}
+
 	// Sim Bounds Debug Draw
-	DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
+	//DrawDebugBox(GetWorld(), FVector(GetActorLocation().X + PR_fSimBoundingBoxWidth / 2, 0.0f, GetActorLocation().Y + PR_fSimBoundingBoxHeight / 2), FVector(PR_fSimBoundingBoxWidth / 2, 0.0f, PR_fSimBoundingBoxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.0f, 0, 2.0f);
 
 	// Particles Debug Draw
 	if (PR_bParticlesDebugDraw)
